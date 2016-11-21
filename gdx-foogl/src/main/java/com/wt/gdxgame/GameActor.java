@@ -1,29 +1,26 @@
 package com.wt.gdxgame;
 
-import aurelienribon.bodyeditor.BodyEditorLoader;
-
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.scenes.scene2d.Actor;
-import com.badlogic.gdx.scenes.scene2d.Event;
-import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
 public class GameActor extends Actor{
 
-	private TextureRegion image=null;
+	private Sprite image=null;
 	private Body body=null;
 	private boolean hflip = false;
 	private boolean vflip = false;
@@ -39,7 +36,8 @@ public class GameActor extends Actor{
 			setHeight(image.getRegionHeight());
 			setOrigin(image.getRegionWidth()/2,image.getRegionHeight()/2);
 		}
-		this.image = image;
+		if(image instanceof Sprite) this.image = (Sprite)image;
+		else	this.image = new Sprite(image);
 	}
 
 	private float speed_x;
@@ -57,7 +55,7 @@ public class GameActor extends Actor{
 			setPosition(pos.x-getOriginX(), pos.y-getOriginY());			
 			setRotation(MathUtils.radiansToDegrees*body.getAngle());
 		}else{
-		  translate(delta*speed_x,delta*speed_y);
+		  moveBy(delta*speed_x,delta*speed_y);
 		  if(speed_rotate!=0){
 			float r=getRotation()+(delta*speed_rotate);
 		    setRotation(r);
@@ -99,18 +97,24 @@ public class GameActor extends Actor{
 	
 
 	@Override
-	public void draw(SpriteBatch batch, float parentAlpha) {
-		Color c=batch.getColor();
+	public void draw(Batch batch, float parentAlpha) {
+		if(image!=null){
+		
+		  image.setPosition(getX(),getY());
+  		  image.draw(batch);
+		}
+
+/*		Color c=batch.getColor();
 		if(c!=getColor())
 		   batch.setColor(getColor());
 		if(image!=null){
 		   drawImage(batch,image);
 		}
 		if(c!=getColor())
-			   batch.setColor(c);
+			   batch.setColor(c); */
 	}
 
-	public void drawImage(SpriteBatch batch, TextureRegion region) {
+	public void drawImage(Batch batch, TextureRegion region) {
 		float x = getX();
 		float y = getY();
 		float scaleX = getScaleX();
@@ -177,24 +181,6 @@ public class GameActor extends Actor{
 
 	public void onRemove() {
 		
-	}
-
-	public void createBody(World world, BodyEditorLoader bodyLoader,String name, boolean dynamic) {       
-		BodyDef bdef=new BodyDef();
-		bdef.position.set(getX(),getY());
-		bdef.type = BodyType.StaticBody;
-		if(dynamic) bdef.type = BodyType.DynamicBody;
-		body = world.createBody(bdef);
-
-		float scale=getScaleX()*getWidth();
-	    FixtureDef fd = new FixtureDef();
-	    fd.density = 0.5f;
-	    fd.friction = 0.5f;
-	    fd.restitution = 0.8f;
-	    
-		bodyLoader.attachFixture(body, name, fd, scale);
-		Vector2 pos = bodyLoader.getOrigin(name, scale);
-		setOrigin(pos.x,pos.y);
 	}
 
 	@Override

@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
@@ -74,7 +75,7 @@ public class EffectManager implements Disposable {
 		}
 		return null;
 	}
-	public void render(SpriteBatch batch,float delta){
+	public void render(Batch batch,float delta){
 		for (int i = playingEffects.size - 1; i >= 0; i--) {
 	        ParticleEffect effect = playingEffects.get(i);
 	        effect.draw(batch, delta);

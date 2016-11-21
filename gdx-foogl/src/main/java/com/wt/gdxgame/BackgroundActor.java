@@ -1,5 +1,6 @@
 package com.wt.gdxgame;
 
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Actor;
@@ -13,10 +14,11 @@ public class BackgroundActor extends Actor {
 		this.image = image;
 		setSize(image.getRegionWidth(), image.getRegionHeight());
 		setZIndex(0);
+		
 	}
-
+  
 	@Override
-	public void draw(SpriteBatch batch, float parentAlpha) {
+	public void draw(Batch batch, float parentAlpha) {
 		Stage st=getStage();
 		if(st==null) return;
 		

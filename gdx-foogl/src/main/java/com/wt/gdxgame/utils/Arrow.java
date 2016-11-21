@@ -69,7 +69,7 @@ public class Arrow implements Disposable{
 	public void draw(Camera camera, float x1,float y1,float x2,float y2){
 	    float ang=MathUtils.radiansToDegrees*MathUtils.atan2(y2-y1,x2-x1);		
 		batch.setProjectionMatrix(camera.combined);
-		batch.setBlendFunction(Gdx.gl10.GL_SRC_ALPHA, Gdx.gl10.GL_ONE);
+		batch.setBlendFunction(Gdx.gl20.GL_SRC_ALPHA, Gdx.gl20.GL_ONE);
 		batch.begin();
 		batch.setColor(color);
 		float dx=x2-x1,dy=y2-y1;

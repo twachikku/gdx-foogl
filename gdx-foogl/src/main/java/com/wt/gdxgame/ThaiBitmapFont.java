@@ -16,8 +16,10 @@ public class ThaiBitmapFont extends BitmapFont{
 		System.out.println((int)'Ø');
 		System.out.println((int)'Ù');
 	}
+	
 	public void computeGlyphAdvancesAndPositions (CharSequence str, FloatArray glyphAdvances, FloatArray glyphPositions) {
-		super.computeGlyphAdvancesAndPositions(str,glyphAdvances,glyphPositions);
+		
+		//super.computeGlyphAdvancesAndPositions(str,glyphAdvances,glyphPositions);
 		
 	}
 	

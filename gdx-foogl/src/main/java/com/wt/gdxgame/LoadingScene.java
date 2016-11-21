@@ -6,13 +6,13 @@ public class LoadingScene extends GameScene {
     Label lbl;
 
 	@Override
-	public void onInit() {
+	public void onCreate() {
 		lbl = new Label("Loading ",getSkin());
-        addActor(lbl,340,200);
+      addActor(lbl,340,200);
 	}
 
 	@Override
-	public void onEnter() {
+	public void onPreload() {
 
 	}
 
@@ -26,5 +26,7 @@ public class LoadingScene extends GameScene {
 	public void onDestroy() {
 
 	}
+
+	
 
 }

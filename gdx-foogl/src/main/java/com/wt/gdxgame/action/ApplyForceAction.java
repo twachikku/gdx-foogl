@@ -21,9 +21,9 @@ public class ApplyForceAction extends TemporalAction {
 		if(!(getActor() instanceof Box2DActor)) return;
 		Box2DActor b = (Box2DActor) getActor();
 		if(px<0 || py<0){
-          b.getBody().applyForceToCenter(fx,fy);
+          b.getBody().applyForceToCenter(fx,fy, true);
 		}else{
-	      b.getBody().applyForce(fx,fy,px,py);			
+	      b.getBody().applyForce(fx,fy,px,py, true);			
 		}
 	}
 }

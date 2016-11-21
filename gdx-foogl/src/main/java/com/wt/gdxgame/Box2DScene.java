@@ -42,7 +42,7 @@ public class Box2DScene extends GameScene {
 	}
 
 	@Override
-	public void onInit() {
+	public void onCreate() {
 		world = new World(new Vector2(0, -10), true);
 		debugRenderer = new Box2DDebugRenderer();
 		onInitWorld(world);
@@ -104,11 +104,7 @@ public class Box2DScene extends GameScene {
 		
 		groundBox.dispose(); 			
 	}
-
-	@Override
-	public void onEnter() {
-
-	}
+	
 
 	final float worldstep=1/60f;
 	float wdelta=0;
@@ -135,5 +131,11 @@ public class Box2DScene extends GameScene {
 		// TODO Auto-generated method stub
 		super.afterDraw(delta);
 		debugRenderer.render(world, getCamera().combined);
+	}
+
+	@Override
+	public void onPreload () {
+		// TODO Auto-generated method stub
+		
 	}
 }

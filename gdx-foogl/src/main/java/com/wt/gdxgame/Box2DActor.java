@@ -1,6 +1,7 @@
 package com.wt.gdxgame;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
@@ -119,7 +120,7 @@ public class Box2DActor extends Actor {
 	}
 
 	@Override
-	public void draw(SpriteBatch batch, float parentAlpha) {		
+	public void draw(Batch batch, float parentAlpha) {		
 		Color c=batch.getColor();
 		if(c!=getColor())
 		   batch.setColor(getColor());
@@ -130,7 +131,7 @@ public class Box2DActor extends Actor {
 		   batch.setColor(c);
 	}
 
-	public void drawImage(SpriteBatch batch, TextureRegion region) {
+	public void drawImage(Batch batch, TextureRegion region) {
 		float x = getX();
 		float y = getY();
 		float scaleX = getScaleX();
