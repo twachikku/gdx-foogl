@@ -13,11 +13,11 @@ import net.devtrainer.foogl.actor.GameActor;
 public class Builder {
 	Scene scene;
 	AssetManager asset;
-	AssetLoader  loader;
+	AssetLoader loader;
 
 	public Builder (Scene scene) {
 		this.scene = scene;
-		this.asset  = Game.asset;
+		this.asset = Game.asset;
 		this.loader = Game.loader;
 	}
 
@@ -37,15 +37,16 @@ public class Builder {
 	}
 
 	public Texture texture (String key) {
-		return get(key,Texture.class);
+		return get(key, Texture.class);
 	}
+
 	public Sound sound (String name) {
-		return get(name,Sound.class);
+		return get(name, Sound.class);
 	}
 
 	private synchronized <T> T get (String key, Class<T> type) {
-     String f = loader.getFile(key, type);
-     if(f==null)f=key;
-     return asset.get(f,type);
+		String f = loader.getFile(key, type);
+		if (f == null) f = key;
+		return asset.get(f, type);
 	}
 }

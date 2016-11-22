@@ -29,7 +29,7 @@ import net.devtrainer.foogl.res.Resource;
 public abstract class Game implements ApplicationListener {
 	static protected Game defaultGameApp;
 	static protected AssetManager asset;
-	static protected AssetLoader  loader = new AssetLoader();	
+	static protected AssetLoader loader = new AssetLoader();
 
 	public static Game getDefaultGameApp () {
 		return defaultGameApp;
@@ -46,7 +46,7 @@ public abstract class Game implements ApplicationListener {
 	private boolean confirmExit = false;
 	private EffectManager effectManager;
 
-	private HashMap<String,Scene> scenes = new HashMap<String,Scene>();
+	private HashMap<String, Scene> scenes = new HashMap<String, Scene>();
 
 	Preferences db;
 
@@ -98,7 +98,6 @@ public abstract class Game implements ApplicationListener {
 		defaultSkin.add(name, lstyle);
 		return lstyle;
 	}
-
 
 	@Override
 	public void create () {
@@ -175,8 +174,8 @@ public abstract class Game implements ApplicationListener {
 
 		NinePatchDrawable dnbox[] = new NinePatchDrawable[8];
 		for (int i = 1; i <= 4; i++) {
-			Texture box1 = new Texture(Gdx.files.classpath("com/wt/gdxgame/res/box" + i + ".png"));
-			Texture boxr = new Texture(Gdx.files.classpath("com/wt/gdxgame/res/box" + i + "r.png"));
+			Texture box1 = new Texture(Resource.getFile("images/box" + i + ".png"));
+			Texture boxr = new Texture(Resource.getFile("images/box" + i + "r.png"));
 
 			NinePatch nbox1 = new NinePatch(box1, 10, 10, 5, 5);
 			NinePatch nbox1r = new NinePatch(boxr, 10, 10, 5, 5);
@@ -277,7 +276,7 @@ public abstract class Game implements ApplicationListener {
 	}
 
 	public static AssetManager getAsset () {
-		if(asset==null) asset = new AssetManager();
+		if (asset == null) asset = new AssetManager();
 		return asset;
 	}
 }

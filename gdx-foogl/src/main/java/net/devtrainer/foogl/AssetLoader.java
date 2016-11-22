@@ -27,7 +27,8 @@ public class AssetLoader {
 		keys.put(type.getSimpleName() + ":" + key, file);
 		asset.load(file, type);
 	}
-	public String getFile(String key, Class type){
+
+	public String getFile (String key, Class type) {
 		return keys.get(type.getSimpleName() + ":" + key);
 	}
 }

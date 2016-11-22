@@ -29,14 +29,14 @@ public abstract class Scene extends Stage implements Screen {
 	private Scene previousScene = null;
 	boolean disposed = false;
 	boolean inited = false;
-	int state=0;
-	
-	final public Builder     add   = new Builder(this);
-	final public AssetLoader load  = Game.loader;
+	int state = 0;
+
+	final public Builder add = new Builder(this);
+	final public AssetLoader load = Game.loader;
 
 	public Scene () {
 		this(Game.defaultGameApp, null);
-		
+
 	}
 
 	public Scene (Scene previousScene) {
@@ -69,15 +69,18 @@ public abstract class Scene extends Stage implements Screen {
 		if (!inited) onCreate();
 		inited = true;
 	}
+
 	abstract public void onPreload ();
 
 	abstract public void onCreate ();
 
-	abstract public void onUpdate (
-		float delta);
+	abstract public void onUpdate (float delta);
 
-	public void onActive(){}
-	public void onInActive(){}
+	public void onActive () {
+	}
+
+	public void onInActive () {
+	}
 
 	abstract public void onDestroy ();
 
@@ -87,8 +90,8 @@ public abstract class Scene extends Stage implements Screen {
 	@Override
 	final public void render (float delta) {
 		checkState();
-		if(state>=2){
-		  renderScene(delta);
+		if (state >= 2) {
+			renderScene(delta);
 		}
 	}
 
@@ -104,7 +107,7 @@ public abstract class Scene extends Stage implements Screen {
 			onUpdate(delta);
 		}
 		if (visible) {
-  		   onRender();
+			onRender();
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 			Gdx.gl.glClearColor(bgcolor.r, bgcolor.g, bgcolor.b, bgcolor.a);
 			camera.update();
@@ -150,10 +153,10 @@ public abstract class Scene extends Stage implements Screen {
 		if (this.active != active) {
 			this.active = active;
 			if (!active) {
-			    if (music != null) music.stop();
-			    onActive();
-			}else{
-			    onInActive();				
+				if (music != null) music.stop();
+				onActive();
+			} else {
+				onInActive();
 			}
 		}
 	}
@@ -269,18 +272,17 @@ public abstract class Scene extends Stage implements Screen {
 		getViewport().setScreenSize(width, height);
 	}
 
-	
 	public void checkState () {
-      if(this.state==0){
-      	onPreload();
-      	state=1;
-      }
-      if(this.state==1){
-      	if(Game.getAsset().update()){
-      	  onCreate();
-      	  active=true;
-        	  state=2;
-      	}
-      }		
+		if (this.state == 0) {
+			onPreload();
+			state = 1;
+		}
+		if (this.state == 1) {
+			if (Game.getAsset().update()) {
+				onCreate();
+				active = true;
+				state = 2;
+			}
+		}
 	}
 }
