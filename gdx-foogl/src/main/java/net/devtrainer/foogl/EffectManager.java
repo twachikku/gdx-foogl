@@ -16,7 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Disposable;
 
-import net.devtrainer.foogl.res.Resource;
+import net.devtrainer.foogl.assets.Resource;
 
 public class EffectManager implements Disposable {
 

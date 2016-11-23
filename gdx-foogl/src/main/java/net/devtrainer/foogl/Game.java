@@ -24,7 +24,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.NinePatchDrawable;
 import com.badlogic.gdx.utils.Array;
 
-import net.devtrainer.foogl.res.Resource;
+import net.devtrainer.foogl.assets.Resource;
 
 public abstract class Game implements ApplicationListener {
 	static protected Game defaultGameApp;

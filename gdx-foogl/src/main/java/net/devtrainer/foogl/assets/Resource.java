@@ -1,5 +1,5 @@
 
-package net.devtrainer.foogl.res;
+package net.devtrainer.foogl.assets;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -11,7 +11,7 @@ public class Resource {
 		return getPath().child(name);
 	}
 
-	static public FileHandle getPath () {
+	static public FileHandle getPath () {		
 		if (path == null) path = Gdx.files.classpath("net/devtrainer/foogl/assets");
 		return path;
 	}
