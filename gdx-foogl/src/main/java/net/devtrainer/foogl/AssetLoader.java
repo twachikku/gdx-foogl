@@ -22,6 +22,12 @@ public class AssetLoader {
 	public void sound (String key, String file) {
 		load(key, file, Sound.class);
 	}
+	public void spriteSheet(String key,String file,int frameWidth, int frameHeight, int margin, int spacing, int frameMax){
+		
+	}
+	public void spriteSheet(String key,String file,int frameWidth, int frameHeight){
+		
+	}
 
 	private void load (String key, String file, Class type) {
 		keys.put(type.getSimpleName() + ":" + key, file);
