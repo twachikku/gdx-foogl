@@ -76,7 +76,7 @@ public abstract class Game implements ApplicationListener, InputProcessor {
 			loadtimer += Gdx.graphics.getRawDeltaTime();
 			if (asset.update()) {
 				_state = 2;
-				onCreate();
+				onLoaded();
 			}
 		}
 		if (_state == 2) {
@@ -142,7 +142,7 @@ public abstract class Game implements ApplicationListener, InputProcessor {
 		return keepAspectRatio;
 	}
 
-	abstract public void onCreate ();
+	abstract public void onLoaded ();
 
 	public boolean onExit () {
 		return true;
