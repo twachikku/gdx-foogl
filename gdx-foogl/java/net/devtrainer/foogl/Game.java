@@ -62,11 +62,13 @@ public abstract class Game implements ApplicationListener, InputProcessor {
 		this.height = height;
 		this.keepAspectRatio = keepAspectRatio;
 		defaultGameApp = this;
+		
 	}
 
 	float loadtimer = 0;
 
 	private void checkState () {
+		
 		if (_state == 0) {
 			_state = 1;
 			//setLoadingSprite(Resource.getFile("loading.png"));
@@ -200,11 +202,13 @@ public abstract class Game implements ApplicationListener, InputProcessor {
 
 	@Override
 	public void resize (int width, int height) {
+		/*
 		this.width=width;
 		this.height=height;
 		for(Scene s:activeScenes){
 		  s.resize(this.width, this.height);
 		}
+		*/
 	}
 
 	@Override

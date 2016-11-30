@@ -31,7 +31,7 @@ public abstract class Scene extends Stage implements Screen {
 	boolean disposed = false;
 	boolean inited = false;
 	int state = 0;
-	private Rectangle screenRect = new Rectangle(0, 0, 800, 600);	
+//	private Rectangle screenRect = new Rectangle(0, 0, 800, 600);	
 	private Group root = new Group(this);
 	private Group loading_root = new Group(this);
 	
@@ -44,15 +44,9 @@ public abstract class Scene extends Stage implements Screen {
 	private ShapeRenderer shape;
 	
 	public Scene () {
-		this(Game.defaultGameApp, null);
-
+		this(Game.defaultGameApp);
 	}
-
-	public Scene (Scene previousScene) {
-		this(Game.defaultGameApp, previousScene);
-	}
-
-	public Scene (Game app, Scene previousScene) {
+	private Scene (Game app) {
 		super(new FitViewport(app.getWidth(), app.getHeight()), app.getBatch());
 		if (getCamera() instanceof OrthographicCamera) {
 			OrthographicCamera cam = (OrthographicCamera)getCamera();
@@ -61,13 +55,15 @@ public abstract class Scene extends Stage implements Screen {
 		}
 		this.game = app;
 		disposed = false;
-		this.previousScene = previousScene;
 		active = false;
 		inited = false;
-		screenRect.width = app.getWidth();
 		shape = new ShapeRenderer();
 		shape.setColor(Color.WHITE);
 		shape.setAutoShapeType(true);
+		getViewport().setScreenSize(app.getWidth(), app.getHeight());
+//		System.out.println(getScreenBound());
+//		screenRect.width  = app.getWidth();
+//		screenRect.height = app.getHeight();
 	}
    
 	public Group getRootGroup () {
@@ -110,8 +106,25 @@ public abstract class Scene extends Stage implements Screen {
 	}
 
 	public void onPostDraw (float delta) {
-		
+		Rectangle r=getScreenBound();
+		shape.begin();
+		shape.setColor(Color.WHITE);
+      shape.rect(r.x, r.y, r.width, r.height);
+		shape.end();
 	}
+	/**
+	 * Called when actor was removed out of the scene
+	 * @param a
+	 */
+	public void onActorRemoved(Actor a){
+		plugins.onActorRemoved(a);
+	}
+	/**
+	 * Called when actor was added to the scene
+	 * @param a
+	 */
+	public void onActorAdded(Actor a){  }
+	
 	public void onLoading (float delta, float progress) {
 		shape.begin();
 		shape.setColor(Color.WHITE);
@@ -124,11 +137,18 @@ public abstract class Scene extends Stage implements Screen {
 		checkState();
 		if (state >= 2) {
 			renderScene(delta);
+			//renderDebug();
 		}else{
 			renderLoading(delta);
 		}
 	}
 
+	private void renderDebug () {
+		shape.begin();
+		shape.setColor(Color.GREEN);
+		root.drawdebug(shape);
+		shape.end();
+	}
 	private void renderLoading (float delta) {
 		loading_root.act(delta);
 		Batch batch = getBatch();
@@ -319,7 +339,8 @@ public abstract class Scene extends Stage implements Screen {
 
 	@Override
 	public void resize (int width, int height) {
-		getViewport().setScreenSize(width, height);
+		//getViewport().setScreenSize(width, height);
+		
 		onResize();
 	}
 
@@ -331,6 +352,7 @@ public abstract class Scene extends Stage implements Screen {
 		if (this.state == 0) {
 			builder.setScene(this);
 			if (!inited) {
+				System.out.println("onCreate");
 				onCreate();
 				plugins.onCreate();
 				inited = true;
@@ -351,11 +373,18 @@ public abstract class Scene extends Stage implements Screen {
 
 	public Rectangle getScreenBound () {
 		OrthographicCamera cam = (OrthographicCamera)getCamera();
-		screenRect.width = cam.viewportWidth * cam.zoom;
-		screenRect.height = cam.viewportHeight * cam.zoom;
-		screenRect.x = cam.position.x - (screenRect.width / 2);
-		screenRect.y = cam.position.y - (screenRect.height / 2);
-		return screenRect;
+		Rectangle r = new Rectangle();
+//		r.width  = cam.viewportWidth  * cam.zoom;
+//		r.height = cam.viewportHeight * cam.zoom;
+//		r.x = cam.position.x - (getViewport().getScreenWidth() / 2);
+//		r.y = cam.position.y - (getViewport().getScreenHeight() / 2);
+		r.width  = getViewport().getScreenWidth()  * cam.zoom;
+		r.height = getViewport().getScreenHeight() * cam.zoom;
+//		r.x = getViewport().getScreenX();
+//		r.y = getViewport().getScreenY();
+		r.x = cam.position.x - r.width/2;
+		r.y = cam.position.y - r.height/2;
+		return r;
 	}
 	public boolean isKeyPressed(int key){
 		return Gdx.input.isKeyPressed(key);
@@ -368,6 +397,7 @@ public abstract class Scene extends Stage implements Screen {
 		getRoot().clear();
 		checkState();
 	}
+	
 
 /*
 	Actor touchActor=null;

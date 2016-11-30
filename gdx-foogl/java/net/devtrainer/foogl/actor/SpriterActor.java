@@ -13,10 +13,19 @@ import com.brashmonkey.spriter.Player.PlayerListener;
 import net.devtrainer.foogl.Scene;
 
 public class SpriterActor extends Actor implements PlayerListener {
-	Player player;
-	String entityName;
-	int entityId;
-	SpriterData data;
+	transient Player player;
+	private String name;
+	private String entityName;
+	private int entityId;
+	public String getName () {
+		return name;
+	}
+
+	public void setName (String name) {
+		this.name = name;
+	}
+
+	transient SpriterData data;
 
 	public SpriterActor (Scene scene, SpriterData data) {
 		this(scene, data, 0);

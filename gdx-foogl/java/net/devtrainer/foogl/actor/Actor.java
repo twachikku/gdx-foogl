@@ -3,8 +3,11 @@ package net.devtrainer.foogl.actor;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Json;
+import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.StringBuilder;
 
 import net.devtrainer.foogl.Game;
@@ -12,36 +15,39 @@ import net.devtrainer.foogl.Scene;
 import net.devtrainer.foogl.action.ActionBuilder;
 
 abstract public class Actor {
+	static private int ID_COUNTER = 0; 
 	static public float min (float v, float m) {
 		if (v >= 0 && v < m) return m;
 		if (v < 0 && v > -m) return -m;
 		return v;
 	}
 
-	final public ActionBuilder actions = new ActionBuilder(this);
+	transient final public ActionBuilder actions = new ActionBuilder(this);
+	private int id;
 	private Vector2 anchor = new Vector2(0, 0);
-	private Vector2 origin = new Vector2(0, 0);
+	private Vector2 origin = new Vector2(0.5f, 0.5f);
 	private Vector2 size = new Vector2(1, 1);
 	private Vector2 scale = new Vector2(1, 1);
-	private Rectangle bound = new Rectangle();
+	transient private Rectangle bound = new Rectangle();
 	private float x, y, rotation;
 
-	private Color color;
+	private Color color=Color.WHITE;
 
-	public final Game game;
+	transient public final Game game;
 
-	public final Scene scene;
+	transient public final Scene scene;
 
 	private int z;
 
-	protected boolean killed = false;
+	transient protected boolean killed = false;
 
 	protected boolean visible = false;
 
-	private Group parent;
+	transient private Group parent;
 
 	public Actor (Scene scene) {
 		super();
+		this.id = ID_COUNTER++;
 		this.scene = scene;
 		this.game = scene.game;
 	}
@@ -65,8 +71,10 @@ abstract public class Actor {
 		return bound;
 	}
    public Vector2 getCenter(){
-   	Vector2 v=new Vector2();   	
-   	return bound.getCenter(v); 
+   	Vector2 v=new Vector2(); 
+   	v.x=x+origin.x*size.x;
+   	v.y=y+origin.y*size.y;
+   	return v; 
    }
 	public Color getColor () {
 		return color;
@@ -196,6 +204,19 @@ abstract public class Actor {
 		origin.x = x;
 		origin.y = y;
 	}
+	public void setOriginPosition (float x, float y) {
+		setLeft(x-origin.x*size.x);
+		setBottom(y-origin.y*size.y);
+		positionChanged();
+	}
+
+	public void setLeft (float v) {
+		setX(v+anchor.x*getWidth());
+	}
+	
+	public void setBottom (float v) {
+		setY(v+anchor.y*getHeight());
+	}
 
 	public void setParent (Group parent) {
 		this.parent = parent;
@@ -304,4 +325,20 @@ abstract public class Actor {
 	public void setPosition (Vector2 position) {
 		setPosition(position.x, position.y);		
 	}
+	
+	public Actor setStyle(String jsonText){
+		//Json json = JsonReader
+		return this;
+	}
+	public int getId () {
+		return id;
+	}
+
+	public void setId (int id) {
+		this.id = id;
+	}
+
+	public void drawdebug (ShapeRenderer shape) {
+		
+	}	
 }

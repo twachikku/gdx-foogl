@@ -3,7 +3,10 @@ package net.devtrainer.foogl.actor;
 
 import java.util.Comparator;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 
@@ -30,6 +33,7 @@ public class Group extends Actor {
 		} else {
 			children.add(a);
 		}
+		scene.onActorAdded(a);
 		return this;
 	}
 
@@ -47,6 +51,10 @@ public class Group extends Actor {
 	@Override
 	public void draw (Batch batch, float parentAlpha) {
        Rectangle vbox = getScene().getScreenBound(); 
+       TextureRegion box = game.builder.texture("box");
+       if(box!=null){
+         //batch.draw(box,vbox.x+1,vbox.y+1, vbox.width-2, vbox.height-2);
+       }
        for (int i = 0; i < children.size; i++) {
  			Actor a=children.get(i);
  			if(vbox.overlaps(a.getBound())){ 	 			
@@ -63,6 +71,7 @@ public class Group extends Actor {
 			a.act(delta);
 			if (a.killed) {
 				children.removeIndex(i);
+				scene.onActorRemoved(a);
 				i--;
 			}
 		}
@@ -70,6 +79,14 @@ public class Group extends Actor {
 
 	public boolean hasChildren () {		
 		return children.size>0;
+	}
+
+	public void drawdebug (ShapeRenderer shape) {
+		
+      for (int i = 0; i < children.size; i++) {
+			Actor a=children.get(i);
+			a.drawdebug(shape);
+      }
 	}
 
 }

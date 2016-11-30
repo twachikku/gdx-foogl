@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.utils.ObjectMap;
 
+import net.devtrainer.foogl.actor.Actor;
 import net.devtrainer.foogl.plugin.Box2DPlugin;
 import net.devtrainer.foogl.plugin.IScenePlugin;
 import net.devtrainer.foogl.plugin.TiledMapPlugin;
@@ -12,7 +13,7 @@ import net.devtrainer.foogl.plugin.TiledMapPlugin;
 public class PluginManager implements IScenePlugin {
    private Scene scene;
    private ObjectMap<Class, IScenePlugin> plugins=new ObjectMap<Class, IScenePlugin>();
-   
+      
 	public PluginManager (Scene scene) {
 		this.scene = scene;		
 	}
@@ -53,6 +54,7 @@ public class PluginManager implements IScenePlugin {
 
 	@Override
 	public void onCreate () {
+		//System.out.println(plugins);
 		for(IScenePlugin p:plugins.values()){ p.onCreate();}
 	}
 
@@ -108,5 +110,13 @@ public class PluginManager implements IScenePlugin {
 	public void onResize () {
 		for(IScenePlugin p:plugins.values()){ p.onResize();}
 	}
-
+	@Override
+	public void onActorRemoved (Actor a) {
+		for(IScenePlugin p:plugins.values()){ p.onActorRemoved(a);}
+	}
+	@Override
+	public void onActorAdded (Actor a) {
+		for(IScenePlugin p:plugins.values()){ p.onActorAdded(a);}
+	}
+  
 }

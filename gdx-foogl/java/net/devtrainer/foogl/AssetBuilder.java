@@ -15,6 +15,7 @@ import com.badlogic.gdx.utils.Scaling;
 import net.devtrainer.foogl.actor.Group;
 import net.devtrainer.foogl.actor.ParticleActor;
 import net.devtrainer.foogl.actor.SpriteActor;
+import net.devtrainer.foogl.actor.SpriteActor.AssetType;
 import net.devtrainer.foogl.actor.SpriterActor;
 import net.devtrainer.foogl.actor.SpriterData;
 
@@ -47,53 +48,63 @@ public class AssetBuilder {
 		return sprite(x, y, key, -1);
 	}
 
-	public SpriteActor animator (float x, float y, String spriteSheet) {		
-		return animator(x,y,animations(spriteSheet));		
+	public SpriteActor animator (float x, float y, String animationName) {
+		return animator(x, y, animationName, null);
 	}
+
+	public SpriteActor animator (float x, float y, String animationName, String action) {
+		SpriteActor a = new SpriteActor(getScene(), animationName, action, AssetType.AsAnimations);
+		a.setPosition(x, y);
+		getDefaultGroup().add(a);
+		return a;
+	}
+
 	public SpriteActor animator (float x, float y, Animations animations) {
 		SpriteActor a = new SpriteActor(getScene());
 		a.setTextureRegion(animations.getDefault().getKeyFrame(0));
 		a.setAnimations(animations);
 		a.setPosition(x, y);
-		getDefaultGroup ().add(a);
-		return a;		
+		getDefaultGroup().add(a);
+		a.play();
+		return a;
 	}
 
 	public SpriteActor sprite (float x, float y, String spriteSheet, int frame) {
-		SpriteActor a = new SpriteActor(getScene());
-		TextureRegion t = texture(spriteSheet, frame);
-		a.setTextureRegion(t);
+		SpriteActor a = new SpriteActor(getScene(), spriteSheet, frame, AssetType.AsSpriteSheet);
 		a.setPosition(x, y);
-		getDefaultGroup ().add(a);
+		getDefaultGroup().add(a);
 		return a;
 	}
-	
+
 	public SpriterActor spriter (float x, float y, String key, String entity) {
 		SpriterData data = get(key, SpriterData.class);
 		if (data == null) return null;
 
 		SpriterActor a = new SpriterActor(getScene(), data, entity);
+		a.setName(key);
 		a.setPosition(x, y);
-		getDefaultGroup ().add(a);
+		getDefaultGroup().add(a);
 		return a;
 	}
+
 	public SpriterActor spriter (float x, float y, String key, int entity) {
 		SpriterData data = get(key, SpriterData.class);
 		if (data == null) return null;
 
 		SpriterActor a = new SpriterActor(getScene(), data, entity);
 		a.setPosition(x, y);
-		getDefaultGroup ().add(a);
+		getDefaultGroup().add(a);
 		return a;
 	}
 
 	public Group group () {
 		Group g = new Group(getScene());
-		getDefaultGroup ().add(g);
+		getDefaultGroup().add(g);
 		return g;
 	}
-	public TiledMap tiledmap(String key){
-		TiledMap map = get(key,TiledMap.class);
+
+	public TiledMap tiledmap (String key) {
+		TiledMap map = get(key, TiledMap.class);
 		return map;
 	}
 
@@ -104,14 +115,14 @@ public class AssetBuilder {
 	public ParticleActor particle (float x, float y, String key, int max) {
 		ParticleEffect fx = get(key, ParticleEffect.class);
 		if (fx == null) return null;
-		ParticleActor a = new ParticleActor(getScene(),fx, max);
+		ParticleActor a = new ParticleActor(getScene(), fx, max);
 		a.setPosition(x, y);
-		getDefaultGroup ().add(a);
+		getDefaultGroup().add(a);
 		return a;
 	}
 
 	public Scene getScene () {
-		if(scene==null)scene=Game.defaultGameApp.getActiveScenes().first();
+		if (scene == null) scene = Game.defaultGameApp.getActiveScenes().first();
 		return scene;
 	}
 
@@ -147,19 +158,20 @@ public class AssetBuilder {
 	public Sound sound (String name) {
 		return get(name, Sound.class);
 	}
+
 	public Music music (String name) {
 		return get(name, Music.class);
 	}
+
 	public Animations animations (String spriteSheetKey) {
-		Animations a= get(spriteSheetKey, Animations.class);
-		if(a==null){
-			a=new Animations();
+		Animations a = get(spriteSheetKey, Animations.class);
+		if (a == null) {
+			a = new Animations();
 			a.add(spriteSheetKey);
-		   loader.storekey(spriteSheetKey, a, Animations.class);
+			loader.storekey(spriteSheetKey, a, Animations.class);
 		}
 		return a;
 	}
-	
 
 	public synchronized <T> T get (String key, Class<T> type) {
 		Object f = loader.getFile(key, type);
@@ -175,13 +187,13 @@ public class AssetBuilder {
 		}
 	}
 
-	public TextureAtlas atlas (String key) {		
-		return get(key,TextureAtlas.class);
+	public TextureAtlas atlas (String key) {
+		return get(key, TextureAtlas.class);
 	}
 
 	public void setScene (Scene scene) {
 		this.scene = scene;
 		setDefaultGroup(scene.getRootGroup());
 	}
-		 
+
 }
