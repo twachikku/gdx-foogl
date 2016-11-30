@@ -64,7 +64,10 @@ abstract public class Actor {
 	public Rectangle getBound () {
 		return bound;
 	}
-
+   public Vector2 getCenter(){
+   	Vector2 v=new Vector2();   	
+   	return bound.getCenter(v); 
+   }
 	public Color getColor () {
 		return color;
 	}
@@ -296,5 +299,9 @@ abstract public class Actor {
 		buffer.append(" origin:");buffer.append(origin);
 		buffer.append(" rotation:");buffer.append(rotation);
 		return buffer.toString();
+	}
+
+	public void setPosition (Vector2 position) {
+		setPosition(position.x, position.y);		
 	}
 }

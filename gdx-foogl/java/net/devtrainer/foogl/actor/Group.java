@@ -18,7 +18,7 @@ public class Group extends Actor {
 
 	public Group add (Actor a) {
 		a.setParent(this);
-		System.out.println("add "+a);
+		//System.out.println("add "+a);
 		if (children.size > 0) {
 			for (int i = children.size - 1; i >= 0; i--) {
 				if (a.getZ() >= children.get(i).getZ()) {

@@ -31,25 +31,25 @@ public class ActionBuilder {
 		a.setColor(color);
 		a.setDuration(duration);
 		a.setInterpolation(tween);
-		return action(a);
+		return add(a);
 	}
 
 	public SoundAction playsound (String name) {
-		return action(new SoundAction(name));
+		return add(new SoundAction(name));
 	}
 	public BlinkAction blink (float duration, float inteval, Color color) {
-		return action(new BlinkAction(duration, inteval, color));
+		return add(new BlinkAction(duration, inteval, color));
 	}
 
 	public BlinkAction blink (float duration, float inteval) {
-		return action(new BlinkAction(duration, inteval, Color.RED));
+		return add(new BlinkAction(duration, inteval, Color.RED));
 	}
 
 	public AlphaAction alpha (float alpha, float duration) {
 		AlphaAction a=new AlphaAction();
 		a.setAlpha(alpha);
 		a.setDuration(duration);
-		return action(a);
+		return add(a);
 	}
 
 	public MoveToAction move (float x, float y, float duration, Interpolation tween) {
@@ -57,13 +57,13 @@ public class ActionBuilder {
 		a.setPosition(x, y);
 		a.setDuration(duration);
 		a.setInterpolation(tween);
-		return action(a);
+		return add(a);
 	}
 
 	public ScaleAction scale (float sx, float sy, float duration, Interpolation tween) {
 		ScaleAction a=new ScaleAction(duration,tween);
 		a.setScale(sx,sy);
-		return action(a);
+		return add(a);
 	}
 
 	public RotateToAction rotate (float degree, float duration, Interpolation tween) {
@@ -71,45 +71,45 @@ public class ActionBuilder {
 		a.setRotation(degree);
 		a.setDuration(duration);
 		a.setInterpolation(tween);		
-		return action(a);
+		return add(a);
 	}
 
 	public AlphaAction fadeOut (float duration) {
-		return action(alpha(duration,0));
+		return add(alpha(duration,0));
 	}
 
 	public AlphaAction fadeIn (float duration) {
-		return action(alpha(duration,1));
+		return add(alpha(duration,1));
 	}
 
 	public KillAction kill (float duration) {		
 		return kill(duration,null);
 	}
 	public KillAction kill (float duration, Actor target) {		
-		return action(new KillAction(duration, target));
+		return add(new KillAction(duration, target));
 	}
 
 	public DelayAction delay (float wait) {
 		if (mode != SEQUENCE) setMode(SEQUENCE);
-		return action(new DelayAction(wait));
+		return add(new DelayAction(wait));
 	}
 	public LoopAction loop (float delay, Action next) {
-		return action(new LoopAction(delay,next));
+		return add(new LoopAction(delay,next));
 	}
 	public LoopAction loop (float delay) {
-		return action(new LoopAction(delay));
+		return add(new LoopAction(delay));
 	}
 	public RepeatAction repeat (float delay,int count,Action next) {
-		return action(new RepeatAction(delay,count,next));
+		return add(new RepeatAction(delay,count,next));
 	}
 	public RepeatAction repeat (float delay,int count) {
-		return action(new RepeatAction(delay,count,null));
+		return add(new RepeatAction(delay,count,null));
 	}
 	
 	/** add action to actor and return the action.
 	 * @param a
 	 * @return */
-	public <T> T action (Action a) {
+	public <T> T add (Action a) {
 		a.setActor(actor);
 		a.setScene(actor.scene);
 		actions.addAction(a);

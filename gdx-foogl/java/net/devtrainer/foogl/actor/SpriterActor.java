@@ -49,7 +49,7 @@ public class SpriterActor extends Actor implements PlayerListener {
 		com.brashmonkey.spriter.Rectangle b=player.getBoudingRectangle(null);
 		Vector2 s=new Vector2(b.right-b.left, b.top-b.bottom);
 		setSourceSize(s); 
-		System.out.println(this);
+		//System.out.println(this);
 	}
 
 	@Override

@@ -146,23 +146,6 @@ public class Box2DActor extends Actor {
 		}	
 	}
 	
-	public void applyForce(float duration,float fx,float fy){
-		ApplyForceAction action=new ApplyForceAction(duration,fx,fy);
-		addAction(action);
-	}
-	public void applyAcceleration(float duration,float ax,float ay){
-		float fx=body.getMass()*ax;
-		float fy=body.getMass()*ay;
-		applyForce(duration,fx, fy);
-	}
-	public void applyForce(float duration,float py,float px,float fx,float fy){
-		ApplyForceAction action=new ApplyForceAction(duration,px,py,fx,fy);
-		addAction(action);
-	}
-	public void applyAcceleration(float duration,float px,float py,float ax,float ay){
-		float fx=body.getMass()*ax;
-		float fy=body.getMass()*ay;
-		applyForce(duration,px,py,fx, fy);
-	}
+
 	
 }

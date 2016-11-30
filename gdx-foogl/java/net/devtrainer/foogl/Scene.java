@@ -35,9 +35,11 @@ public abstract class Scene extends Stage implements Screen {
 	private Group root = new Group(this);
 	private Group loading_root = new Group(this);
 	
+	
 	final public AssetBuilder builder = Game.builder;
 	final public AssetLoader  loader = Game.loader;
 	final public Game game;
+	final public PluginManager plugins = new PluginManager(this);
 
 	private ShapeRenderer shape;
 	
@@ -166,17 +168,20 @@ public abstract class Scene extends Stage implements Screen {
 		if (active) {
 			update(delta);
 			onUpdate(delta);
+			plugins.onUpdate(delta);
 		}
 		if (visible) {
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 			Gdx.gl.glClearColor(bgcolor.r, bgcolor.g, bgcolor.b, bgcolor.a);
 			camera.update();
 			onPreDraw(delta);
+			plugins.onPreDraw(delta);
 			//if (!getRoot().isVisible()) return;
 			batch.setProjectionMatrix(camera.combined);
 			batch.begin();
 			draw(batch, delta);
 			batch.end();
+			plugins.onPostDraw(delta);
 			onPostDraw(delta);
 		}
 	}
@@ -205,6 +210,7 @@ public abstract class Scene extends Stage implements Screen {
 			music.pause();
 		}
 		onPause();
+		plugins.onPause();
 	}
 
 	@Override
@@ -214,6 +220,7 @@ public abstract class Scene extends Stage implements Screen {
 		}
 		active = true;
 		onResume();
+		plugins.onResume();
 	}
 
 	public boolean isActive () {
@@ -264,6 +271,7 @@ public abstract class Scene extends Stage implements Screen {
 		shape.dispose();
 		super.dispose();
 		onDestroy();
+		plugins.onDestroy();
 		getGameApp().getDb().flush();
 	}
 
@@ -312,6 +320,11 @@ public abstract class Scene extends Stage implements Screen {
 	@Override
 	public void resize (int width, int height) {
 		getViewport().setScreenSize(width, height);
+		onResize();
+	}
+
+	public void onResize () {
+		
 	}
 
 	public void checkState () {		
@@ -319,14 +332,17 @@ public abstract class Scene extends Stage implements Screen {
 			builder.setScene(this);
 			if (!inited) {
 				onCreate();
+				plugins.onCreate();
 				inited = true;
 			}
 			onPreload();
+			plugins.onPreload();
 			state = 1;
 		}
 		if (this.state == 1) {
 			if (Game.getAsset().update()) {
 				onLoaded();
+				plugins.onLoaded();
 				active = true;
 				state = 2;
 			}

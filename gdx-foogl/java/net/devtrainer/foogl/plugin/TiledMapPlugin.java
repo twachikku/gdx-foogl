@@ -1,6 +1,7 @@
-package net.devtrainer.foogl;
+package net.devtrainer.foogl.plugin;
 
 import java.util.ArrayList;
+import java.util.function.Function;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -12,19 +13,28 @@ import com.badlogic.gdx.maps.tiled.TiledMapImageLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
-abstract public class TiledMapScene extends Scene {
-   //private Array<int> backgrounds;
+import net.devtrainer.foogl.actor.Actor;
+
+public class TiledMapPlugin extends ScenePlugin {
 	private OrthogonalTiledMapRenderer renderer;
 	private TiledMap map;
 	private int[] backgrounds;
 	private int[] forgrounds;
+	private TiledMapCallBack callback;
 
-	public TiledMapScene () {
-		
-	}
+	public TiledMapPlugin () {
 	
+	}
 	public TiledMap getMap () {
 		return map;
+	}
+
+	public OrthogonalTiledMapRenderer getRenderer () {
+		return renderer;
+	}
+	public void setRenderer (OrthogonalTiledMapRenderer renderer) {		
+		this.renderer = renderer;
+		this.renderer.setMap(map);
 	}
 
 	public void setMap (TiledMap map) {
@@ -62,14 +72,34 @@ abstract public class TiledMapScene extends Scene {
 		for(int i=0;i<fg.size();i++){
 			forgrounds[i]=fg.get(i);
 		}		
-		renderer = new OrthogonalTiledMapRenderer(map,getBatch());	
-		getViewport().setWorldSize(maxw,maxh);
+		if(renderer==null){
+		   renderer = new TiledMapRenderer(map,getScene().getBatch());
+		}else{
+			renderer.setMap(map);
+		}
+		getScene().getViewport().setWorldSize(maxw,maxh);
+		onResize();
+	}
+	@Override
+	public void onCreate () {
+	}
+
+	@Override
+	public void onPreload () {
+	}
+
+	@Override
+	public void onLoaded () {
+	}
+
+	@Override
+	public void onUpdate (float delta) {
 	}
 
 	@Override
 	public void onPreDraw (float delta) {
 		if(map!=null && renderer!=null){
-		  renderer.setView((OrthographicCamera)getCamera());
+		  renderer.setView((OrthographicCamera)getScene().getCamera());
 		  renderer.render(backgrounds);
 		}
 	}
@@ -80,10 +110,6 @@ abstract public class TiledMapScene extends Scene {
     		renderer.render(forgrounds);
 		}
 	}
-
-	public void onRenderObject(MapObject object){
-		
-	}	
 	
 	@Override
 	public void onDestroy () {
@@ -92,15 +118,25 @@ abstract public class TiledMapScene extends Scene {
 			renderer.dispose();
 		}
 	}
-   
-   class TiledMapRenderer extends OrthogonalTiledMapRenderer{
+	public TiledMapCallBack getCallback () {
+		return callback;
+	}
+	public void setCallback (TiledMapCallBack callback) {
+		this.callback = callback;
+	}
+	
+	public void collide(Actor actor,String layer, TiledMapCollideCallBack callback){
+	  // TODO - collision detection	
+	}
+	
+	class TiledMapRenderer extends OrthogonalTiledMapRenderer{
 
 		public TiledMapRenderer (TiledMap map, Batch batch) {
 			super(map, batch);			
 		}
 		@Override
 		public void renderObject(MapObject object) {
-          onRenderObject(object);
+			if(callback!=null) callback.renderObject(object);
 		}	   	
    }
 }
