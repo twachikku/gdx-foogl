@@ -31,21 +31,21 @@ public abstract class Scene extends Stage implements Screen {
 	boolean disposed = false;
 	boolean inited = false;
 	int state = 0;
-//	private Rectangle screenRect = new Rectangle(0, 0, 800, 600);	
+// private Rectangle screenRect = new Rectangle(0, 0, 800, 600);
 	private Group root = new Group(this);
 	private Group loading_root = new Group(this);
-	
-	
+
 	final public AssetBuilder builder = Game.builder;
-	final public AssetLoader  loader = Game.loader;
+	final public AssetLoader loader = Game.loader;
 	final public Game game;
 	final public PluginManager plugins = new PluginManager(this);
 
 	private ShapeRenderer shape;
-	
+
 	public Scene () {
 		this(Game.defaultGameApp);
 	}
+
 	private Scene (Game app) {
 		super(new FitViewport(app.getWidth(), app.getHeight()), app.getBatch());
 		if (getCamera() instanceof OrthographicCamera) {
@@ -61,11 +61,11 @@ public abstract class Scene extends Stage implements Screen {
 		shape.setColor(Color.WHITE);
 		shape.setAutoShapeType(true);
 		getViewport().setScreenSize(app.getWidth(), app.getHeight());
-//		System.out.println(getScreenBound());
-//		screenRect.width  = app.getWidth();
-//		screenRect.height = app.getHeight();
+// System.out.println(getScreenBound());
+// screenRect.width = app.getWidth();
+// screenRect.height = app.getHeight();
 	}
-   
+
 	public Group getRootGroup () {
 		return root;
 	}
@@ -102,43 +102,41 @@ public abstract class Scene extends Stage implements Screen {
 	abstract public void onDestroy ();
 
 	public void onPreDraw (float delta) {
-		
+
 	}
 
 	public void onPostDraw (float delta) {
-		Rectangle r=getScreenBound();
-		shape.begin();
-		shape.setColor(Color.WHITE);
-      shape.rect(r.x, r.y, r.width, r.height);
-		shape.end();
+		/*
+		 * Rectangle r=getScreenBound(); shape.begin(); shape.setColor(Color.WHITE); shape.rect(r.x, r.y, r.width, r.height);
+		 * shape.end();
+		 */
 	}
-	/**
-	 * Called when actor was removed out of the scene
-	 * @param a
-	 */
-	public void onActorRemoved(Actor a){
+
+	/** Called when actor was removed out of the scene
+	 * @param a */
+	public void onActorRemoved (Actor a) {
 		plugins.onActorRemoved(a);
 	}
-	/**
-	 * Called when actor was added to the scene
-	 * @param a
-	 */
-	public void onActorAdded(Actor a){  }
-	
+
+	/** Called when actor was added to the scene
+	 * @param a */
+	public void onActorAdded (Actor a) {
+	}
+
 	public void onLoading (float delta, float progress) {
 		shape.begin();
 		shape.setColor(Color.WHITE);
-		shape.circle(getWidth()/2,getHeight()/2,progress*200);
+		shape.circle(getWidth() / 2, getHeight() / 2, progress * 200);
 		shape.end();
 	}
-	
+
 	@Override
 	final public void render (float delta) {
 		checkState();
 		if (state >= 2) {
 			renderScene(delta);
-			//renderDebug();
-		}else{
+			// renderDebug();
+		} else {
 			renderLoading(delta);
 		}
 	}
@@ -149,6 +147,7 @@ public abstract class Scene extends Stage implements Screen {
 		root.drawdebug(shape);
 		shape.end();
 	}
+
 	private void renderLoading (float delta) {
 		loading_root.act(delta);
 		Batch batch = getBatch();
@@ -157,33 +156,33 @@ public abstract class Scene extends Stage implements Screen {
 		Gdx.gl.glClearColor(bgcolor.r, bgcolor.g, bgcolor.b, bgcolor.a);
 		camera.update();
 		batch.setProjectionMatrix(camera.combined);
-		if(!loading_root.hasChildren()){
+		if (!loading_root.hasChildren()) {
 			getGameApp().renderLoading(delta);
-		}		
+		}
 		batch.begin();
-		onLoading(delta,Game.asset.getProgress());		
+		onLoading(delta, Game.asset.getProgress());
 		loading_root.draw(batch, 1);
 		batch.end();
-		
+
 	}
 
 	public void addActor (Actor actor) {
 		if (state >= 2) {
-		   root.add(actor);
-		}else{
+			root.add(actor);
+		} else {
 			loading_root.add(actor);
 		}
 	}
 
 	public void draw (Batch batch, float delta) {
-		//getRoot().draw(batch, 1);
-		root.draw(batch,1);
+		// getRoot().draw(batch, 1);
+		root.draw(batch, 1);
 	}
 
 	final protected void renderScene (float delta) {
 		Batch batch = getBatch();
 		Camera camera = getCamera();
-		//getRoot().setCullingArea(getScreenBound());
+		// getRoot().setCullingArea(getScreenBound());
 
 		if (active) {
 			update(delta);
@@ -194,10 +193,10 @@ public abstract class Scene extends Stage implements Screen {
 			Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 			Gdx.gl.glClearColor(bgcolor.r, bgcolor.g, bgcolor.b, bgcolor.a);
 			camera.update();
+			// if (!getRoot().isVisible()) return;
+			batch.setProjectionMatrix(camera.combined);
 			onPreDraw(delta);
 			plugins.onPreDraw(delta);
-			//if (!getRoot().isVisible()) return;
-			batch.setProjectionMatrix(camera.combined);
 			batch.begin();
 			draw(batch, delta);
 			batch.end();
@@ -339,16 +338,16 @@ public abstract class Scene extends Stage implements Screen {
 
 	@Override
 	public void resize (int width, int height) {
-		//getViewport().setScreenSize(width, height);
-		
+		// getViewport().setScreenSize(width, height);
+
 		onResize();
 	}
 
 	public void onResize () {
-		
+
 	}
 
-	public void checkState () {		
+	public void checkState () {
 		if (this.state == 0) {
 			builder.setScene(this);
 			if (!inited) {
@@ -374,81 +373,50 @@ public abstract class Scene extends Stage implements Screen {
 	public Rectangle getScreenBound () {
 		OrthographicCamera cam = (OrthographicCamera)getCamera();
 		Rectangle r = new Rectangle();
-//		r.width  = cam.viewportWidth  * cam.zoom;
-//		r.height = cam.viewportHeight * cam.zoom;
-//		r.x = cam.position.x - (getViewport().getScreenWidth() / 2);
-//		r.y = cam.position.y - (getViewport().getScreenHeight() / 2);
-		r.width  = getViewport().getScreenWidth()  * cam.zoom;
+// r.width = cam.viewportWidth * cam.zoom;
+// r.height = cam.viewportHeight * cam.zoom;
+// r.x = cam.position.x - (getViewport().getScreenWidth() / 2);
+// r.y = cam.position.y - (getViewport().getScreenHeight() / 2);
+		r.width = getViewport().getScreenWidth() * cam.zoom;
 		r.height = getViewport().getScreenHeight() * cam.zoom;
-//		r.x = getViewport().getScreenX();
-//		r.y = getViewport().getScreenY();
-		r.x = cam.position.x - r.width/2;
-		r.y = cam.position.y - r.height/2;
+// r.x = getViewport().getScreenX();
+// r.y = getViewport().getScreenY();
+		r.x = cam.position.x - r.width / 2;
+		r.y = cam.position.y - r.height / 2;
 		return r;
 	}
-	public boolean isKeyPressed(int key){
+
+	public boolean isKeyPressed (int key) {
 		return Gdx.input.isKeyPressed(key);
 	}
+
 	public ShapeRenderer getShape () {
 		return shape;
 	}
+
 	public void restart () {
-		state=0;
+		state = 0;
 		getRoot().clear();
 		checkState();
 	}
-	
 
 /*
-	Actor touchActor=null;
-	@Override
-	public boolean touchDown (int screenX, int screenY, int pointer, int button) {	
-		touchActor = hit(screenX, screenY, true);
-		if(touchActor!=null){
-			InputEvent event=new InputEvent();
-			event.setType(Type.touchDown);
-			event.setStageX(screenX);
-			event.setStageY(screenY);
-			event.setPointer(pointer);
-			event.setButton(button);
-			event.setTarget(touchActor);
-			touchActor.fire(event);
-			return touchActor.fire(event);
-		}
-		return false;
-		}
+ * Actor touchActor=null;
+ * 
+ * @Override public boolean touchDown (int screenX, int screenY, int pointer, int button) { touchActor = hit(screenX, screenY,
+ * true); if(touchActor!=null){ InputEvent event=new InputEvent(); event.setType(Type.touchDown); event.setStageX(screenX);
+ * event.setStageY(screenY); event.setPointer(pointer); event.setButton(button); event.setTarget(touchActor);
+ * touchActor.fire(event); return touchActor.fire(event); } return false; }
+ * 
+ * @Override public boolean touchDragged (int screenX, int screenY, int pointer) { touchActor = hit(screenX, screenY, true);
+ * if(touchActor!=null){ InputEvent event=new InputEvent(); event.setType(Type.touchDown); event.setStageX(screenX);
+ * event.setStageY(screenY); event.setPointer(pointer); event.setTarget(touchActor); return touchActor.fire(event); } return
+ * false; }
+ * 
+ * @Override public boolean touchUp (int screenX, int screenY, int pointer, int button) { if(touchActor!=null){ InputEvent
+ * event=new InputEvent(); event.setType(Type.touchUp); event.setStageX(screenX); event.setStageY(screenY);
+ * event.setPointer(pointer); event.setButton(button); event.setTarget(touchActor); boolean r=touchActor.fire(event); touchActor =
+ * null; return r; } return false; }
+ */
 
-	@Override
-	public boolean touchDragged (int screenX, int screenY, int pointer) {
-		touchActor = hit(screenX, screenY, true);
-		if(touchActor!=null){
-			InputEvent event=new InputEvent();
-			event.setType(Type.touchDown);
-			event.setStageX(screenX);
-			event.setStageY(screenY);
-			event.setPointer(pointer);
-			event.setTarget(touchActor);
-			return touchActor.fire(event);
-		}
-		return false;
-	}
-
-	@Override
-	public boolean touchUp (int screenX, int screenY, int pointer, int button) {
-		if(touchActor!=null){
-			InputEvent event=new InputEvent();
-			event.setType(Type.touchUp);
-			event.setStageX(screenX);
-			event.setStageY(screenY);
-			event.setPointer(pointer);
-			event.setButton(button);
-			event.setTarget(touchActor);
-			boolean r=touchActor.fire(event);
-			touchActor = null;
-			return r;
-		}
-		return false;
-	}
-*/
-	
 }

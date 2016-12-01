@@ -30,6 +30,11 @@ dependencies {
     compile "com.badlogicgames.gdx:gdx:$gdxVersion"
     compile "com.badlogicgames.gdx:gdx-box2d:$gdxVersion"
     compile "com.badlogicgames.box2dlights:box2dlights:$box2DLightsVersion"
+    compile "org.mozilla:rhino:1.7.7.1"
+   // compile "org.beanshell:bsh-core:2.0b4";
+   // compile "org.beanshell:bsh-reflect:2.0b4";
+   // compile "org.beanshell:bsh-util:2.0b4";
+   // compile "org.beanshell:bsh-classgen:2.0b4";
 
     testCompile 'junit:junit:4.12'
 }

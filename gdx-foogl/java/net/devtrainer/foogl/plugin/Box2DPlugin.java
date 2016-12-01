@@ -55,6 +55,12 @@ public class Box2DPlugin extends ScenePlugin {
 		}
 		return null;
 	}
+	public Body enableBody (Actor a, Shape shape, int itype) {
+		BodyDef.BodyType btype=BodyType.StaticBody;
+		if(itype==1) btype = BodyType.KinematicBody;
+		else if(itype==2) btype = BodyType.DynamicBody;		
+		return enableBody(a,shape, btype); 		
+	}
 	public Body enableBody (Actor a, Shape shape, BodyDef.BodyType btype) {
 		if (world == null) return null;
 		boolean cflag = false;
@@ -124,7 +130,7 @@ public class Box2DPlugin extends ScenePlugin {
 	@Override
 	public void onUpdate (float delta) {
 		if (world == null) return;
-		float frameTime = Math.min(delta, 0.25f);
+		float frameTime = Math.min(delta, 0.1f);		
 		wdelta += frameTime;
 		while (wdelta >= TIME_STEP) {
 			world.step(TIME_STEP, VELOCITY_ITERATIONS, POSITION_ITERATIONS);
