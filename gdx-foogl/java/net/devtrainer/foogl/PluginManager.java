@@ -6,8 +6,10 @@ import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.utils.ObjectMap;
 
 import net.devtrainer.foogl.actor.Actor;
+import net.devtrainer.foogl.plugin.Box2DLightPlugin;
 import net.devtrainer.foogl.plugin.Box2DPlugin;
 import net.devtrainer.foogl.plugin.IScenePlugin;
+import net.devtrainer.foogl.plugin.JavaScriptPlugin;
 import net.devtrainer.foogl.plugin.TiledMapPlugin;
 
 public class PluginManager implements IScenePlugin {
@@ -50,6 +52,12 @@ public class PluginManager implements IScenePlugin {
 	}
 	public Box2DPlugin box2d(){
 		return uses(Box2DPlugin.class);		
+	}
+	public JavaScriptPlugin javascript(){
+		return uses(JavaScriptPlugin.class);		
+	}
+	public Box2DLightPlugin box2dlight(){
+		return uses(Box2DLightPlugin.class);		
 	}
 
 	@Override
