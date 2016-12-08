@@ -1,0 +1,43 @@
+package net.devtrainer.gdxfoogl.demo;
+
+import com.badlogic.gdx.math.Interpolation;
+
+import net.devtrainer.foogl.Scene;
+import net.devtrainer.foogl.actor.SpriteActor;
+
+public class DemoScene extends Scene {
+	SpriteActor logo;
+
+	public DemoScene() {
+
+	}
+
+	@Override
+	public void onPreload() {
+		loader.image("logo", "gfx/foogl.png");
+
+	}
+
+	@Override
+	public void onLoaded() {
+		logo=builder.sprite(getWidth()/2, 0,"logo");
+        logo.setAnchor(0.5f,0.5f);
+        logo.actions.moveTo(getWidth()/2, getHeight()/2, 1, Interpolation.bounceOut);
+        logo.actions.rotate(360*2,2.0f);
+        logo.actions.sequence();
+        logo.actions.delay(5);
+        logo.actions.moveTo(getWidth()+100,getHeight()/2,2);
+	}
+	
+	@Override
+	public void onUpdate(float delta) {
+		
+
+	}
+
+	@Override
+	public void onDestroy() {
+		
+	}
+
+}

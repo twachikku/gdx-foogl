@@ -1,0 +1,15 @@
+package %PACKAGE%.desktop;
+
+import com.badlogic.gdx.Files.FileType;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import %PACKAGE%.%MAIN_CLASS%;
+
+public class DesktopLauncher {
+	public static void main (String[] arg) {
+		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.addIcon("net/devtrainer/foogl/assets/icon32.png", FileType.Classpath);
+		
+		new LwjglApplication(new %MAIN_CLASS%(), config);
+	}
+}

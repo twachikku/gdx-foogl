@@ -1,0 +1,18 @@
+package %PACKAGE%;
+
+import com.badlogic.gdx.Gdx;
+import net.devtrainer.foogl.Game;
+
+public class %MAIN_CLASS% extends Game {
+		
+	@Override
+    public void onPreload() {
+        setLoadingSprite(Gdx.files.internal("gfx/loading.png"));
+        addScene("demo",new DemoScene());
+    }
+    
+    @Override
+    public void onLoaded() {
+        startScene("demo");
+    }    
+}
