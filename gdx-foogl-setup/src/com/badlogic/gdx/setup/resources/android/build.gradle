@@ -80,7 +80,7 @@ eclipse {
     // ignores any nodes added in classpath.file.withXml
     sourceSets {
         main {
-            java.srcDirs "src", 'gen'
+            java.srcDirs "src", 'gen', '../game/assets'
         }
     }
 
@@ -102,7 +102,8 @@ eclipse {
         buildCommand "org.eclipse.andmore.PreCompilerBuilder"
         buildCommand "org.eclipse.jdt.core.javabuilder"
         buildCommand "org.eclipse.andmore.ApkBuilder"
-    }
+        linkedResource name: 'assets', type: '2', location: 'PARENT-1-PROJECT_LOC/%ASSET_PATH%'
+     }
 }
 
 // sets up the Android Idea project, using the old Ant based build.
