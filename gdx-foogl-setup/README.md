@@ -2,6 +2,10 @@ GDX-Foogl project setup
 ===================
 
 GDX-Foogl is based on [libGDX setup)(https://github.com/libgdx/libgdx/tree/master/extensions/gdx-setup). This setup powered by gradle, allowing any combination of sub projects and official extensions to get you up and running in a few clicks.  Although this tool will handle setup for you, LEARN GRADLE!
+# What's New
+- replace  gradle:2.2.3 with gradle:2.14.1
+- replace  com.android.ide.eclipse.adt with  org.eclipse.andmore.AndroidNature 
+ 
 
 # Using
 1. Download [gdxfoogl-setup.jar](gdxfoogl-setup.jar)
