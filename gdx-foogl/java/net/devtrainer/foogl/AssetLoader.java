@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.PolygonRegion;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -34,6 +35,7 @@ public class AssetLoader {
 	}
 	public void image (String key, String file) {
 		load(key, file, Texture.class);
+		getkeys(key).remove(TextureRegion.class);
 	}
 
 	public void music (String key, String file) {
@@ -86,7 +88,11 @@ public class AssetLoader {
 		} else {
 			vals = keys.get(key);
 		}
+		vals.remove(type);
 		vals.put(type, value);
+		//System.out.println("  storekey "+key+"  f:"+value+" type:"+type.getName());
+		//System.out.println("  getfile  "+key+"  f:"+getFile(key, type));
+		
 	}
 
 	protected Object getFile (String key, Class type) {

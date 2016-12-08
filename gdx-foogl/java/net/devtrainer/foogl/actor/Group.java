@@ -18,7 +18,9 @@ public class Group extends Actor {
 	public Group (Scene scene) {
 		super(scene);
 	}
-
+    public void clear(){
+    	children.clear();
+    }
 	public Group add (Actor a) {
 		a.setParent(this);
 		//System.out.println("add "+a);
@@ -41,7 +43,8 @@ public class Group extends Actor {
 		children.sort(new Comparator<Actor>() {
 			@Override
 			public int compare (Actor o1, Actor o2) {
-				int z1=o1.getZ(), z2=o2.getZ();
+				int z1=o1.getZ()*10000+o1.getId(), z2=o2.getZ()*10000+o2.getId();
+
 				if(z1==z2)	return 0;
 				if(z1>z2) return 1;
 				else return -1;
@@ -50,11 +53,15 @@ public class Group extends Actor {
 
 	@Override
 	public void draw (Batch batch, float parentAlpha) {
-       Rectangle vbox = getScene().getScreenBound(); 
-       TextureRegion box = game.builder.texture("box");
-       if(box!=null){
+       Rectangle vbox = getScene().getScreenBound();
+       vbox.x-=20;
+       vbox.y-=20;
+       vbox.width+=100; vbox.height+=100;
+        //TextureRegion box = game.builder.texture("box");
+	   parentAlpha*=getAlpha();
+       //if(box!=null){
          //batch.draw(box,vbox.x+1,vbox.y+1, vbox.width-2, vbox.height-2);
-       }
+       //}
        for (int i = 0; i < children.size; i++) {
  			Actor a=children.get(i);
  			if(vbox.overlaps(a.getBound())){ 	 			

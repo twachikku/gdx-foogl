@@ -1,5 +1,6 @@
 package com.brashmonkey.spriter.LibGdx;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -12,6 +13,7 @@ public class LibGdxDrawer extends Drawer<Sprite>{
 	
 	Batch batch;
 	ShapeRenderer renderer;
+	Color color = Color.WHITE;
 	
 	public LibGdxDrawer(Loader<Sprite> loader, ShapeRenderer renderer){
 		super(loader);
@@ -28,7 +30,8 @@ public class LibGdxDrawer extends Drawer<Sprite>{
 
 	@Override
 	public void setColor(float r, float g, float b, float a) {
-		renderer.setColor(r, g, b, a);
+		this.color.set(r, g, b, a);
+		//renderer.setColor(r, g, b, a);
 	}
 	
 	@Override
@@ -60,7 +63,7 @@ public class LibGdxDrawer extends Drawer<Sprite>{
 		sprite.setOrigin(newPivotX, newPivotY);
 		sprite.setRotation(object.angle);
 		
-		sprite.setColor(1f, 1f, 1f, object.alpha);
+		sprite.setColor(1f*color.r, 1f*color.g, 1f*color.b, object.alpha*color.a);
 		sprite.setScale(object.scale.x, object.scale.y);
 		sprite.draw(batch);
 	}

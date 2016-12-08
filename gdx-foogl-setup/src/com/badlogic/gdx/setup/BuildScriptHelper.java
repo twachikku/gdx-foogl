@@ -71,6 +71,7 @@ public class BuildScriptHelper {
 		write(wr, "}");
 		space(wr);
 		write(wr, "repositories {");
+		write(wr, DependencyBank.jCenter);
 		write(wr, DependencyBank.mavenLocal);
 		write(wr, DependencyBank.mavenCentral);
 		write(wr, "maven { url \"" + DependencyBank.libGDXSnapshotsUrl + "\" }");
@@ -108,7 +109,11 @@ public class BuildScriptHelper {
 				}
 			}
 		}
-		write(wr, "compile fileTree(dir: 'libs', include: '*.jar')");		
+		if (!project.equals(ProjectType.CORE)) {
+		  write(wr, "compile fileTree(dir: '../games/libs', include: '*.jar')");
+		}else{
+	      write(wr, "compile fileTree(dir: 'libs', include: '*.jar')");			
+		}
 		write(wr, "}");
 	}
 

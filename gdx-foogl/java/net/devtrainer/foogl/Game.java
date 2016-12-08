@@ -24,12 +24,13 @@ public abstract class Game implements ApplicationListener, InputProcessor {
 	static public final AssetLoader loader = new AssetLoader();
 	static public final AssetBuilder builder = new AssetBuilder();
 
-	public static AssetManager getAsset () {
-		if (asset == null) asset = new AssetManager();
+	public static AssetManager getAsset() {
+		if (asset == null)
+			asset = new AssetManager();
 		return asset;
 	}
 
-	public static Game getDefaultGameApp () {
+	public static Game getDefaultGameApp() {
 		return defaultGameApp;
 	}
 
@@ -41,8 +42,9 @@ public abstract class Game implements ApplicationListener, InputProcessor {
 	private Skin defaultSkin = new Skin();
 	private boolean confirmExit = false;
 	private ObjectMap<String, Scene> scenes = new ObjectMap<String, Scene>();
-	private Array<Scene> activeScenes = new Array<Scene>(); 
+	private Array<Scene> activeScenes = new Array<Scene>();
 	private Sprite loadingSprite = null;
+	private boolean pauseOnInactive = true;
 
 	Preferences db;
 
@@ -52,26 +54,26 @@ public abstract class Game implements ApplicationListener, InputProcessor {
 
 	int _state = 0;
 
-	public Game () {
+	public Game() {
 		this(800, 600, true);
 	}
 
-	public Game (int width, int height, boolean keepAspectRatio) {
+	public Game(int width, int height, boolean keepAspectRatio) {
 		super();
 		this.width = width;
 		this.height = height;
 		this.keepAspectRatio = keepAspectRatio;
 		defaultGameApp = this;
-		
+
 	}
 
 	float loadtimer = 0;
 
-	private void checkState () {
-		
+	private void checkState() {
+
 		if (_state == 0) {
 			_state = 1;
-			//setLoadingSprite(Resource.getFile("loading.png"));
+			// setLoadingSprite(Resource.getFile("loading.png"));
 			onPreload();
 		}
 		if (_state == 1) {
@@ -82,14 +84,15 @@ public abstract class Game implements ApplicationListener, InputProcessor {
 			}
 		}
 		if (_state == 2) {
-         if(Gdx.input.isKeyPressed(Input.Keys.ESCAPE) || Gdx.input.isKeyPressed(Input.Keys.BACK)){
-         	if(onExit()) exitState=2;
-         }
+			if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE) || Gdx.input.isKeyPressed(Input.Keys.BACK)) {
+				if (onExit())
+					exitState = 2;
+			}
 		}
 	}
 
 	@Override
-	public void create () {
+	public void create() {
 		// Dialog.fadeDuration = 0;
 		batch = new SpriteBatch();
 		Gdx.input.setInputProcessor(this);
@@ -101,9 +104,9 @@ public abstract class Game implements ApplicationListener, InputProcessor {
 	}
 
 	@Override
-	public void dispose () {
+	public void dispose() {
 		db.flush();
-		for(Scene s: scenes.values()){
+		for (Scene s : scenes.values()) {
 			s.dispose();
 		}
 		defaultSkin.dispose();
@@ -111,67 +114,69 @@ public abstract class Game implements ApplicationListener, InputProcessor {
 		batch.dispose();
 	}
 
-	public SpriteBatch getBatch () {
+	public SpriteBatch getBatch() {
 		return batch;
 	}
 
-	public Preferences getDb () {
+	public Preferences getDb() {
 		return db;
 	}
 
-	public int getHeight () {
+	public int getHeight() {
 		return height;
 	}
 
-
-	public Skin getSkin () {
+	public Skin getSkin() {
 		return defaultSkin;
 	}
 
-	public int getWidth () {
+	public int getWidth() {
 		return width;
 	}
 
-	public boolean isActive () {
+	public boolean isActive() {
 		return active;
 	}
 
-	public boolean isConfirmExit () {
+	public boolean isConfirmExit() {
 		return confirmExit;
 	}
 
-	public boolean isKeepAspectRatio () {
+	public boolean isKeepAspectRatio() {
 		return keepAspectRatio;
 	}
 
-	abstract public void onLoaded ();
+	abstract public void onLoaded();
 
-	public boolean onExit () {
+	public boolean onExit() {
 		return true;
 	}
 
-	abstract public void onPreload ();
+	abstract public void onPreload();
 
 	@Override
-	public void pause () {
-		active = false;
-		for(Scene s:activeScenes){
-			s.pause();
+	public void pause() {
+		if (pauseOnInactive) {
+			active = false;
+			for (Scene s : activeScenes) {
+				s.pause();
+			}
 		}
 	}
 
 	@Override
-	public void render () {
-		if (active) if (exitState == 2) {
-			Gdx.app.exit();
-			return;
-		}
+	public void render() {
+		if (active)
+			if (exitState == 2) {
+				Gdx.app.exit();
+				return;
+			}
 		checkState();
 		if (_state >= 2) {
-			for(Scene s:activeScenes){
+			for (Scene s : activeScenes) {
 				s.render(Math.min(Gdx.graphics.getDeltaTime(), 1 / 60f));
 			}
-			if(activeScenes.size==0){
+			if (activeScenes.size == 0) {
 				exitState = 2;
 			}
 		} else {
@@ -181,101 +186,102 @@ public abstract class Game implements ApplicationListener, InputProcessor {
 		}
 	}
 
-	public ObjectMap<String, Scene> getScenes () {
+	public ObjectMap<String, Scene> getScenes() {
 		return scenes;
 	}
 
-	public Array<Scene> getActiveScenes () {
+	public Array<Scene> getActiveScenes() {
 		return activeScenes;
 	}
 
-	public void renderLoading (float delta) {
+	public void renderLoading(float delta) {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
-		float p=asset.getProgress();
-		if(loadingSprite!=null){
-		  loadingSprite.setScale(p,1);
-		  loadingSprite.draw(batch);
+		float p = asset.getProgress();
+		if (loadingSprite != null) {
+			loadingSprite.setScale(p, 1);
+			loadingSprite.draw(batch);
 		}
 		batch.end();
 	}
 
 	@Override
-	public void resize (int width, int height) {
+	public void resize(int width, int height) {
 		/*
-		this.width=width;
-		this.height=height;
-		for(Scene s:activeScenes){
-		  s.resize(this.width, this.height);
-		}
-		*/
+		 * this.width=width; this.height=height; for(Scene s:activeScenes){
+		 * s.resize(this.width, this.height); }
+		 */
 	}
 
 	@Override
-	public void resume () {
+	public void resume() {
 		// System.out.println("resume ()");
 		active = true;
-		for(Scene s:activeScenes){
-			 s.resume();
+		for (Scene s : activeScenes) {
+			s.resume();
 		}
 	}
 
-	public void setConfirmExit (boolean confirmExit) {
+	public void setConfirmExit(boolean confirmExit) {
 		this.confirmExit = confirmExit;
 	}
 
-	public void setHeight (int height) {
+	public void setHeight(int height) {
 		this.height = height;
 	}
 
-	public void setKeepAspectRatio (boolean keepAspectRatio) {
+	public void setKeepAspectRatio(boolean keepAspectRatio) {
 		this.keepAspectRatio = keepAspectRatio;
 	}
 
-	public void showScene (String name) {
+	public void showScene(String name) {
 		Scene s = scenes.get(name);
-		if(s!=null){
-	  	   showScene(s);
+		if (s != null) {
+			showScene(s);
 		}
 	}
-	public void showScene (Scene scene) {
-		if(!activeScenes.contains(scene, false)){
-		  this.activeScenes.add(scene);
-		  Gdx.input.setInputProcessor(scene);
-		  scene.restart();
+
+	public void showScene(Scene scene) {
+		if (!activeScenes.contains(scene, false)) {
+			this.activeScenes.add(scene);
+			Gdx.input.setInputProcessor(scene);
+			scene.restart();
 		}
 	}
-	public void startScene (String name) {
+
+	public void startScene(String name) {
 		Scene s = scenes.get(name);
-		if(s!=null){
-	  	   startScene(s);
+		if (s != null) {
+			startScene(s);
 		}
 	}
-	public void startScene (Scene scene) {
+
+	public void startScene(Scene scene) {
 		this.activeScenes.clear();
 		this.activeScenes.add(scene);
-		//Gdx.input.setInputProcessor(scene);
+		// Gdx.input.setInputProcessor(scene);
 		Gdx.input.setInputProcessor(this);
 		scene.restart();
 	}
-	
-	public void addScene(Scene scene){
-		addScene(scene.getClass().getSimpleName(),scene);
-	}
-	public void addScene(String name, Scene scene){
-		System.out.println("add scene:"+name);
-		scenes.put(name,scene);
+
+	public void addScene(Scene scene) {
+		addScene(scene.getClass().getSimpleName(), scene);
 	}
 
-	public void setWidth (int width) {
+	public void addScene(String name, Scene scene) {
+		System.out.println("add scene:" + name);
+		scenes.put(name, scene);
+	}
+
+	public void setWidth(int width) {
 		this.width = width;
 	}
 
-	public Sprite getLoadingSprite () {
+	public Sprite getLoadingSprite() {
 		return loadingSprite;
 	}
 
-	public void setLoadingSprite (FileHandle file) {
+	public void setLoadingSprite(FileHandle file) {
 		Texture texture = new Texture(file);
 		float gw = Gdx.graphics.getWidth();
 		float gh = Gdx.graphics.getHeight();
@@ -284,93 +290,100 @@ public abstract class Game implements ApplicationListener, InputProcessor {
 		float y = (gh - h) / 2f;
 		this.loadingSprite = new Sprite(texture);
 		this.loadingSprite.setPosition(x, y);
-		//	System.out.println("w:" + w + " h:" + h + " x:" + x + " y:" + y + "  width:" + gw + " height:" + gh);
+		// System.out.println("w:" + w + " h:" + h + " x:" + x + " y:" + y + "
+		// width:" + gw + " height:" + gh);
 	}
-	
-	public boolean isKeyPressed(int key){
+
+	public boolean isKeyPressed(int key) {
 		return Gdx.input.isKeyPressed(key);
 	}
-	
 
 	@Override
-	public boolean keyDown (int keycode) {
-		if(activeScenes!=null){
-		 for(Scene s:activeScenes){
-			 s.keyDown(keycode);
-		 }
+	public boolean keyDown(int keycode) {
+		if (activeScenes != null) {
+			for (Scene s : activeScenes) {
+				s.keyDown(keycode);
+			}
 		}
 		return false;
 	}
 
 	@Override
-	public boolean keyUp (int keycode) {
-		if(activeScenes!=null){
-			 for(Scene s:activeScenes){
-				 s.keyUp(keycode);
-			 }
+	public boolean keyUp(int keycode) {
+		if (activeScenes != null) {
+			for (Scene s : activeScenes) {
+				s.keyUp(keycode);
+			}
 		}
 		return false;
 	}
 
 	@Override
-	public boolean keyTyped (char character) {
-		if(activeScenes!=null){
-			 for(Scene s:activeScenes){
-				 s.keyTyped(character);
-			 }
+	public boolean keyTyped(char character) {
+		if (activeScenes != null) {
+			for (Scene s : activeScenes) {
+				s.keyTyped(character);
+			}
 		}
 		return false;
 	}
 
 	@Override
-	public boolean touchDown (int screenX, int screenY, int pointer, int button) {
-		if(activeScenes!=null){
-			 for(Scene s:activeScenes){
-				 s.touchDown(screenX, screenY, pointer, button);
-			 }
+	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+		if (activeScenes != null) {
+			for (Scene s : activeScenes) {
+				s.touchDown(screenX, screenY, pointer, button);
+			}
 		}
 		return false;
 	}
 
 	@Override
-	public boolean touchUp (int screenX, int screenY, int pointer, int button) {
-		if(activeScenes!=null){
-			 for(Scene s:activeScenes){
-				 s.touchUp(screenX, screenY, pointer, button);
-			 }
+	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+		if (activeScenes != null) {
+			for (Scene s : activeScenes) {
+				s.touchUp(screenX, screenY, pointer, button);
+			}
 		}
 		return false;
 	}
 
 	@Override
-	public boolean touchDragged (int screenX, int screenY, int pointer) {
-		if(activeScenes!=null){
-			 for(Scene s:activeScenes){
-				 s.touchDragged(screenX, screenY, pointer);
-			 }
+	public boolean touchDragged(int screenX, int screenY, int pointer) {
+		if (activeScenes != null) {
+			for (Scene s : activeScenes) {
+				s.touchDragged(screenX, screenY, pointer);
+			}
 		}
 		return false;
 	}
 
 	@Override
-	public boolean mouseMoved (int screenX, int screenY) {
-		if(activeScenes!=null){
-			 for(Scene s:activeScenes){
-				 s.mouseMoved(screenX, screenY);
-			 }
+	public boolean mouseMoved(int screenX, int screenY) {
+		if (activeScenes != null) {
+			for (Scene s : activeScenes) {
+				s.mouseMoved(screenX, screenY);
+			}
 		}
 		return false;
 	}
 
 	@Override
-	public boolean scrolled (int amount) {
-		if(activeScenes!=null){
-			 for(Scene s:activeScenes){
-				 s.scrolled(amount);
-			 }
+	public boolean scrolled(int amount) {
+		if (activeScenes != null) {
+			for (Scene s : activeScenes) {
+				s.scrolled(amount);
+			}
 		}
 		return false;
 	}
 
-	
+	public boolean isPauseOnInactive() {
+		return pauseOnInactive;
+	}
+
+	public void setPauseOnInactive(boolean pauseOnInactive) {
+		this.pauseOnInactive = pauseOnInactive;
+	}
+
 }

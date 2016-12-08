@@ -1,9 +1,17 @@
 
 package net.devtrainer.foogl.action;
 
+import com.badlogic.gdx.math.Interpolation;
+
 public class MoveToAction extends TemporalAction {
 	private float startX, startY;
 	private float endX, endY;
+
+	public MoveToAction(float endX, float endY, float duration, Interpolation interpolation) {
+		super(duration, interpolation);
+		this.endX = endX;
+        this.endY = endY;
+	}
 
 	protected void begin () {
 		startX = actor.getX();

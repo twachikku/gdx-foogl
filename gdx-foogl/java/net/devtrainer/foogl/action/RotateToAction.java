@@ -25,7 +25,7 @@ public class RotateToAction extends TemporalAction {
 	}
 
 	protected void update (float percent) {
-		System.out.println(percent);
+		//System.out.println(percent);
 		actor.setRotation(start + (end - start) * percent);
 	}
 

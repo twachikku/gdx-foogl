@@ -4,18 +4,9 @@ import com.badlogic.gdx.math.Interpolation;
 
 public class ScaleAction extends TemporalAction {
 
-	public ScaleAction () {
-		// TODO Auto-generated constructor stub
-	}
-
-	public ScaleAction (float duration) {
-		super(duration);
-		// TODO Auto-generated constructor stub
-	}
-
-	public ScaleAction (float duration, Interpolation interpolation) {
+	public ScaleAction (float sx,float sy, float duration, Interpolation interpolation) {
 		super(duration, interpolation);
-		// TODO Auto-generated constructor stub
+		setScale(sx,sy);
 	}
 
 	private float startX, startY;
