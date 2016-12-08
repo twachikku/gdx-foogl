@@ -110,7 +110,7 @@ public class BuildScriptHelper {
 			}
 		}
 		if (!project.equals(ProjectType.CORE)) {
-		  write(wr, "compile fileTree(dir: '../games/libs', include: '*.jar')");
+		  write(wr, "compile fileTree(dir: '../game/libs', include: '*.jar')");
 		}else{
 	      write(wr, "compile fileTree(dir: 'libs', include: '*.jar')");			
 		}
