@@ -108,6 +108,7 @@ public class BuildScriptHelper {
 				}
 			}
 		}
+		write(wr, "compile fileTree(dir: 'libs', include: '*.jar')");		
 		write(wr, "}");
 	}
 

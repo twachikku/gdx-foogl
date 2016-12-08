@@ -229,7 +229,7 @@ public class DependencyBank {
 
 
 	public enum ProjectType {
-		CORE("core", new String[]{"java"}),
+		CORE("game", new String[]{"java"}),
 		DESKTOP("desktop", new String[]{"java"}),
 		ANDROID("android", new String[]{"android"}),
 		IOS("ios", new String[]{"java", "robovm"}),
