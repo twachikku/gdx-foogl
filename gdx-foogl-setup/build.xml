@@ -4,7 +4,7 @@
 	<!-- Definitions -->
 	<!-- ****************************************************************** -->
 
-	<property name="name" value="gdx-setup" />
+	<property name="name" value="gdxfoogl-setup" />
 	<property name="mainClass" value="com.badlogic.gdx.setup.GdxSetup" />
 
 	<!-- ****************************************************************** -->
