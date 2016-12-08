@@ -9,6 +9,10 @@ import net.devtrainer.foogl.actor.Actor;
 public class ParallelAction extends Action {
 	Array<Action> actions = new Array(4);
 	private boolean complete;
+        /**
+         * automatic remove the complete action
+         */
+        private boolean autoRemove=false;
 
 	public ParallelAction () {
 	}
@@ -24,7 +28,7 @@ public class ParallelAction extends Action {
 			Action currentAction = actions.get(i);
 			if (!currentAction.act(delta)){
 				complete = false;
-			}else{
+			}else if(autoRemove){
 				actions.removeIndex(i);
 				i--;
 			}
@@ -46,8 +50,16 @@ public class ParallelAction extends Action {
 	}
 
 	public void addAction (Action action) {
+		if(action.parent!=null){
+		   action.parent.removeAction(action);
+		}
 		actions.add(action);
 		if (actor != null) action.setActor(actor);
+		complete = false;
+	}
+	public void removeAction(Action action){
+		actions.removeValue(action,true);
+		action.parent = null;
 	}
 
 	public void setActor (Actor actor) {
@@ -73,4 +85,18 @@ public class ParallelAction extends Action {
 		buffer.append(')');
 		return buffer.toString();
 	}
+
+    public boolean isComplete() {
+		if(actions.size==0) return true;
+        return complete;
+    }
+
+    public boolean isAutoRemove() {
+        return autoRemove;
+    }
+
+    public void setAutoRemove(boolean autoRemove) {
+        this.autoRemove = autoRemove;
+    }
+        
 }

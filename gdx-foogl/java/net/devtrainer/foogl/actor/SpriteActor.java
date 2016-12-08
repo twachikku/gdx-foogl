@@ -15,7 +15,7 @@ import net.devtrainer.foogl.Animations;
 import net.devtrainer.foogl.Scene;
 //import net.devtrainer.foogl.TSprite;
 
-public class SpriteActor extends Actor {
+public class SpriteActor extends Group {
 	public enum AssetType {
 		AsCode, AsTexture, AsSpriteSheet, AsTextureAtlas, AsAnimations
 	}
@@ -146,17 +146,16 @@ public class SpriteActor extends Actor {
 
 	@Override
 	public void draw (Batch batch, float parentAlpha) {
+		super.draw(batch, parentAlpha);
 		/** batch.setColor(getColor()); Rectangle r = getBound(); batch.draw(sprite, r.x, r.y, getPivotX(), getPivotY(),
 		 * sprite.getRegionWidth(), sprite.getRegionHeight(), getScaleX(), getScaleY(), getRotation()); */
-		//sprite.setBounds(getLeft(), getBottom(), getSourceSize().x, getSourceSize().y);
-      //sprite.setColor(getColor());
-      //sprite.setOrigin(getPivotX(), getPivotY());
-		//sprite.setRotation(getRotation());
-		//sprite.setScale(getScaleX(), getScaleY());
-		//sprite.draw(batch, parentAlpha);
-		
-		batch.draw(sprite,getLeft(),getBottom(),getPivotX(), getPivotY(),getSourceSize().x,getSourceSize().y,getScaleX(),getScaleY(),getRotation());
-		
+		sprite.setBounds(getLeft(), getBottom(), getSourceSize().x, getSourceSize().y);
+        sprite.setColor(getColor());
+        sprite.setOrigin(getPivotX(), getPivotY());
+		sprite.setRotation(getRotation());
+	    sprite.setScale(getScaleX(), getScaleY());
+		sprite.draw(batch, parentAlpha*getAlpha());
+		//batch.draw(sprite,getLeft(),getBottom(),getPivotX(), getPivotY(),getSourceSize().x,getSourceSize().y,getScaleX(),getScaleY(),getRotation());
 	}
 
 	@Override
@@ -167,6 +166,7 @@ public class SpriteActor extends Actor {
 		//super.drawdebug(shape);
 	}
 	public void update (float delta) {
+        super.update(delta);
 		if (currentAnimation != null) {
 			timer += delta;
 			Animation.PlayMode mode = currentAnimation.getPlayMode();

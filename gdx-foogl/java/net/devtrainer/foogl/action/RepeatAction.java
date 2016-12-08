@@ -11,7 +11,8 @@ public class RepeatAction extends LoopAction {
 	public boolean process () {
 		time=0;
 		n++;
-		return n<count;
+        if(next!=null) next.restart();
+		return n>=count;
 	}
 
 }

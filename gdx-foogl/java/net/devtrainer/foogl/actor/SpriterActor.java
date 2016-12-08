@@ -1,6 +1,7 @@
 
 package net.devtrainer.foogl.actor;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -12,11 +13,12 @@ import com.brashmonkey.spriter.Player.PlayerListener;
 
 import net.devtrainer.foogl.Scene;
 
-public class SpriterActor extends Actor implements PlayerListener {
+public class SpriterActor extends Group implements PlayerListener {
 	transient Player player;
 	private String name;
 	private String entityName;
 	private int entityId;
+	private  Vector2 offset=new Vector2(0,0);
 	public String getName () {
 		return name;
 	}
@@ -48,55 +50,74 @@ public class SpriterActor extends Actor implements PlayerListener {
 	}
 
 	private void init () {
-		setOrigin(player.getPivotX(), player.getPivotY());
-		setAnchor(0.5f, 0);
+		com.brashmonkey.spriter.Rectangle b=player.getBoudingRectangle(null);
+		offset.x = b.left;
+		offset.y = b.bottom;
+		Vector2 s=new Vector2(b.right-b.left, b.top-b.bottom);
+		setSourceSize(s);
+		setAnchor(0.0f, 0.0f);
 		player.addListener(this);
 	}
 
 	public void play (String actionName) {
 		this.player.setAnimation(actionName);
-		com.brashmonkey.spriter.Rectangle b=player.getBoudingRectangle(null);
-		Vector2 s=new Vector2(b.right-b.left, b.top-b.bottom);
-		setSourceSize(s); 
-		//System.out.println(this);
 	}
 
 	@Override
 	public void draw (Batch batch, float parentAlpha) {
+		super.draw(batch,parentAlpha);
+		Color c=getColor();
+		data.drawer.setColor(c.r,c.g,c.b,getAlpha()*parentAlpha);
 		data.drawer.setBatch(batch);
 		data.drawer.draw(player);
+		data.drawer.setColor(1,1,1,1);
 	}
 
 		@Override
 	public void update (float delta) {
-		player.update();
+		super.update(delta);
+			player.update();
 	}
 
 	@Override
 	protected void positionChanged () {
+		/**
+		 * TODO : Scale issue
+		 */
 		super.positionChanged();
 		Rectangle b=getBound();
-		player.setPosition(b.x, b.y);
+		Vector2 center = new Vector2(b.getWidth()/2,b.getHeight()/2);
+		Vector2 v1 = new Vector2(-center.x,-center.y);
+		Vector2 v2 = new Vector2(offset.x,offset.y);
+		if(isFlipX()) v2.x=-(b.width+v2.x);
+		if(isFlipY()) v2.y=-(b.width+v2.y);
+		v1.rotate(getRotation());
+		v1.add(center);
+		v2.rotate(getRotation());
+		player.setPivot(0,0);
+		player.setAngle(getRotation());
+		player.setPosition(getX()-v2.x+v1.x,getY()-v2.y+v1.y);
 	}
 
 	@Override
 	protected void sizeChanged () {
-      super.sizeChanged();
+        super.sizeChanged();
 		player.setScale(getScale().x, getScale().y);
 	}
 
 	@Override
 	protected void scaleChanged () {
 		super.scaleChanged();
-      player.setScale(getScale().x, getScale().y);
+		com.brashmonkey.spriter.Rectangle b=player.getBoudingRectangle(null);
+		offset.x = b.left*getScaleX();
+		offset.y = b.bottom*getScaleY();
+		player.setScale(getScale().x, getScale().y);
 	}
 	
 	@Override
 	protected void rotationChanged () {
 		super.rotationChanged();
-		Vector2 o = getOrigin();
-		player.setPivot(getPivotX(), getPivotY());
-		player.setAngle(getRotation());
+		positionChanged ();
 	}
 
 	public String getEntityName () {
@@ -151,5 +172,17 @@ public class SpriterActor extends Actor implements PlayerListener {
 	@Override
 	public void mainlineKeyChanged (Key prevKey, Key newKey) {
 
+	}
+
+	@Override
+	public void setFlipX(boolean flipX) {
+		super.setFlipX(flipX);
+		if((player.flippedX()==-1 && !flipX)||(player.flippedX()==1 && flipX) ) player.flipX();
+	}
+
+	@Override
+	public void setFlipY(boolean flipY) {
+		super.setFlipY(flipY);
+		if((player.flippedY()==-1 && !flipY)||(player.flippedY()==1 && flipY) ) player.flipY();
 	}
 }

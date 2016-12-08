@@ -2,6 +2,7 @@
 package net.devtrainer.foogl.actor;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Colors;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
@@ -12,13 +13,17 @@ import com.badlogic.gdx.utils.StringBuilder;
 
 import net.devtrainer.foogl.Game;
 import net.devtrainer.foogl.Scene;
+import net.devtrainer.foogl.action.Action;
 import net.devtrainer.foogl.action.ActionBuilder;
 
 abstract public class Actor {
-	static private int ID_COUNTER = 0; 
-	static public float min (float v, float m) {
-		if (v >= 0 && v < m) return m;
-		if (v < 0 && v > -m) return -m;
+	static private int ID_COUNTER = 0;
+
+	static public float min(float v, float m) {
+		if (v >= 0 && v < m)
+			return m;
+		if (v < 0 && v > -m)
+			return -m;
 		return v;
 	}
 
@@ -31,7 +36,11 @@ abstract public class Actor {
 	transient private Rectangle bound = new Rectangle();
 	private float x, y, rotation;
 
-	private Color color=Color.WHITE;
+	private Color color = new Color(Color.WHITE);
+
+	private float alpha = 1f;
+	private boolean flipX = false;
+	private boolean flipY = false;
 
 	transient public final Game game;
 
@@ -45,231 +54,280 @@ abstract public class Actor {
 
 	transient private Group parent;
 
-	public Actor (Scene scene) {
+	public Actor(Scene scene) {
 		super();
 		this.id = ID_COUNTER++;
 		this.scene = scene;
 		this.game = scene.game;
 	}
 
-	final public void act (float delta){
+	final public void act(float delta) {
 		actions.act(delta);
 		update(delta);
 	};
-	public abstract void update(float delta);
-	public abstract void draw (Batch batch, float parentAlpha);
 
-	public Vector2 getAnchor () {
+	public abstract void update(float delta);
+
+	public abstract void draw(Batch batch, float parentAlpha);
+
+	public float getAlpha() {
+		return alpha;
+	}
+
+	public void setAlpha(float alpha) {
+		this.alpha = alpha;
+	}
+
+	public Vector2 getAnchor() {
 		return anchor;
 	}
 
-	public float getBottom () {
+	public float getBottom() {
 		return getBound().y;
 	}
 
-	public Rectangle getBound () {
+	public Rectangle getBound() {
 		return bound;
 	}
-   public Vector2 getCenter(){
-   	Vector2 v=new Vector2(); 
-   	v.x=x+origin.x*size.x;
-   	v.y=y+origin.y*size.y;
-   	return v; 
-   }
-	public Color getColor () {
+
+	public Vector2 getCenter() {
+		Vector2 v = new Vector2();
+		v.x = x + origin.x * size.x;
+		v.y = y + origin.y * size.y;
+		return v;
+	}
+
+	public Color getColor() {
 		return color;
 	}
 
-	public float getHeight () {
+	public float getHeight() {
 		return bound.height;
 	}
 
-	public float getLeft () {
+	public float getLeft() {
 		return getBound().x;
 	}
 
-	public Vector2 getOrigin () {
+	public Vector2 getOrigin() {
 		return origin;
 	}
 
-	public Group getParent () {
+	public Group getParent() {
 		return parent;
 	}
 
-	public float getPivotX () {
+	public float getPivotX() {
 		return origin.x * size.x;
 	}
 
-	public float getPivotY () {
+	public float getPivotY() {
 		return origin.y * size.y;
 	}
 
-	public float getRotation () {
+	public float getRotation() {
 		return rotation;
 	}
 
-	public Vector2 getScale () {
+	public Vector2 getScale() {
 		return scale;
 	}
 
-	public float getScaleX () {
+	public float getScaleX() {
 		return scale.x;
 	}
 
-	public float getScaleY () {
+	public float getScaleY() {
 		return scale.y;
 	}
 
-	public Scene getScene () {
+	public Scene getScene() {
 		return scene;
 	}
 
-	protected Vector2 getSourceSize () {
+	protected Vector2 getSourceSize() {
 		return size;
 	}
 
-	public float getWidth () {
-		return  bound.width;
+	public float getWidth() {
+		return bound.width;
 	}
 
-	public float getX () {
+	public float getX() {
 		return x;
 	}
 
-	public float getY () {
+	public float getY() {
 		return y;
 	}
 
-	public int getZ () {
+	public int getZ() {
 		return z;
 	}
 
-	public boolean isKilled () {
+	public boolean isKilled() {
 		return killed;
 	}
 
-	public boolean isVisible () {
+	public boolean isVisible() {
 		return visible;
 	}
 
-	public void kill () {
+	public void kill() {
 		killed = true;
 	}
 
-	public void onDestroy () {
+	public void onDestroy() {
 	}
 
-	public void onKill () {
+	public void onKill() {
 	}
 
-	protected void positionChanged () {
+	protected void positionChanged() {
 		bound.x = x - anchor.x * bound.width;
 		bound.y = y - anchor.y * bound.height;
 	}
 
-	protected void rotationChanged () {
+	protected void rotationChanged() {
 	}
 
-	protected void scaleChanged () {
+	protected void scaleChanged() {
 		Vector2 size = getSourceSize();
-		bound.width =size.x * scale.x;
-		bound.height=size.y * scale.y;
+		bound.width = size.x * scale.x;
+		bound.height = size.y * scale.y;
 		bound.x = x - anchor.x * bound.width;
 		bound.y = y - anchor.y * bound.height;
 	}
 
-	public void setAnchor (float x, float y) {
-		if (x < 0) x = 0;
-		if (x > 1) x = 1;
-		if (y < 0) y = 0;
-		if (y > 1) y = 1;
+	public void setAnchor(float x, float y) {
+		if (x < 0)
+			x = 0;
+		if (x > 1)
+			x = 1;
+		if (y < 0)
+			y = 0;
+		if (y > 1)
+			y = 1;
 		anchor.x = x;
 		anchor.y = y;
-		scaleChanged ();
+		scaleChanged();
 	}
 
-	public void setColor (Color color) {
-		this.color = color;
+	public void setColor(Color color) {
+		this.color.set(color);
 	}
 
-	public void setHeight (float height) {
+	static public Color strToColor(String color) {
+		Color c = Color.WHITE;
+		color = color.toUpperCase();
+		if (color.startsWith("#")) {
+			if (color.length() >= 7)
+				c = Color.valueOf(color);
+			else if (color.length() >= 4) {
+				int r = Integer.valueOf(color.substring(1, 2), 16);
+				int g = Integer.valueOf(color.substring(2, 3), 16);
+				int b = Integer.valueOf(color.substring(3, 4), 16);
+				int a = color.length() != 5 ? 15 : Integer.valueOf(color.substring(4, 5), 16);
+				c = new Color(r / 15f, g / 15f, b / 15f, a / 15f);
+			}
+		} else {			
+			if (Colors.getColors().containsKey(color)) {
+				c = Colors.get(color);
+			}
+		}
+		//System.out.print
+		return c;
+	}
+	public void setColor(String color) {		
+		this.color.set(strToColor(color));
+	}
+
+	public void setHeight(float height) {
 		setSize(bound.width, height);
 	}
 
-	public void setOrigin (float x, float y) {
-		if (x < 0) x = 0;
-		if (x > 1) x = 1;
-		if (y < 0) y = 0;
-		if (y > 1) y = 1;
+	public void setOrigin(float x, float y) {
+		if (x < 0)
+			x = 0;
+		if (x > 1)
+			x = 1;
+		if (y < 0)
+			y = 0;
+		if (y > 1)
+			y = 1;
 		origin.x = x;
 		origin.y = y;
 	}
-	public void setOriginPosition (float x, float y) {
-		setLeft(x-origin.x*size.x);
-		setBottom(y-origin.y*size.y);
+
+	public void setOriginPosition(float x, float y) {
+		setLeft(x - origin.x * size.x);
+		setBottom(y - origin.y * size.y);
 		positionChanged();
 	}
 
-	public void setLeft (float v) {
-		setX(v+anchor.x*getWidth());
-	}
-	
-	public void setBottom (float v) {
-		setY(v+anchor.y*getHeight());
+	public void setLeft(float v) {
+		setX(v + anchor.x * getWidth());
 	}
 
-	public void setParent (Group parent) {
+	public void setBottom(float v) {
+		setY(v + anchor.y * getHeight());
+	}
+
+	public void setParent(Group parent) {
 		this.parent = parent;
 	}
 
-	public void setRotation (float rotation) {
+	public void setRotation(float rotation) {
 		if (this.rotation != rotation) {
 			this.rotation = rotation;
 			rotationChanged();
 		}
 	}
 
-	public void setScale (float sx, float sy) {
+	public void setScale(float sx, float sy) {
 		scale.x = min(sx, 0.001f);
 		scale.y = min(sy, 0.001f);
 		this.scale.set(sx, sy);
 		scaleChanged();
 	}
 
-	public void setScale (float scale) {
+	public void setScale(float scale) {
 		setScale(scale, scale);
 	}
-	
-	public void setScale (Vector2 scale) {
+
+	public void setScale(Vector2 scale) {
 		setScale(scale.x, scale.y);
 	}
 
-	public void setScaleX (float sx) {
+	public void setScaleX(float sx) {
 		setScale(sx, scale.y);
 	}
 
-	public void setScaleY (float sy) {
+	public void setScaleY(float sy) {
 		setScale(scale.x, sy);
 	}
 
-	public void setSourceSize (float sx,float sy) {
+	public void setSourceSize(float sx, float sy) {
 		if (this.size.x != sy || this.size.y != sy) {
-			if (sx <= 0) sx = 1;
-			if (sy <= 0) sy = 1;
+			if (sx <= 0)
+				sx = 1;
+			if (sy <= 0)
+				sy = 1;
 			this.size.x = sx;
 			this.size.y = sy;
 			scaleChanged();
 		}
 	}
-	public void setSourceSize (Vector2 size) {
+
+	public void setSourceSize(Vector2 size) {
 		setSourceSize(size.x, size.y);
 	}
 
-	public void setVisible (boolean visible) {
+	public void setVisible(boolean visible) {
 		this.visible = visible;
 	}
 
-	public void setSize (float width, float height) {
+	public void setSize(float width, float height) {
 		if (this.bound.width != width || this.bound.height != height) {
 			this.bound.width = width;
 			this.bound.height = height;
@@ -277,19 +335,19 @@ abstract public class Actor {
 		}
 	}
 
-	public void setWidth (float width) {
+	public void setWidth(float width) {
 		setSize(width, this.bound.height);
 	}
 
-	public void setX (float x) {
+	public void setX(float x) {
 		setPosition(x, y);
 	}
 
-	public void setY (float y) {
+	public void setY(float y) {
 		setPosition(x, y);
 	}
 
-	public void setPosition (float x, float y) {
+	public void setPosition(float x, float y) {
 		if (x != this.x || y != this.y) {
 			this.x = x;
 			this.y = y;
@@ -297,48 +355,89 @@ abstract public class Actor {
 		}
 	}
 
-	public void setZ (int z) {
-		this.z = z;
+	public void setZ(int z) {
+		setZ(z, true);
 	}
 
-	protected void sizeChanged () {
+	public void setZ(int z, boolean reoder) {
+		if (this.z != z) {
+			this.z = z;
+			if (parent != null && reoder) {
+				parent.actions.add(new Action() {
+					@Override
+					public boolean act(float delta) {
+						parent.updateZorder();
+						return true;
+					}
+				});
+			}
+		}
+	}
+
+	protected void sizeChanged() {
 		Vector2 size = getSourceSize();
 		this.scale.x = this.bound.width / size.x;
 		this.scale.y = this.bound.height / size.y;
 		bound.x = x - anchor.x * this.bound.width;
 		bound.y = y - anchor.y * this.bound.height;
 	}
-	public String toString(){
+
+	public String toString() {
 		StringBuilder buffer = new StringBuilder(32);
 		buffer.append(getClass().toString());
-		buffer.append(" x:");buffer.append(x);
-		buffer.append(" y:");buffer.append(y);
-		buffer.append(" bound:");buffer.append(bound);
-		buffer.append(" scale:");buffer.append(scale);
-		buffer.append(" size:");buffer.append(size);
-		buffer.append(" anchor:");buffer.append(anchor);
-		buffer.append(" origin:");buffer.append(origin);
-		buffer.append(" rotation:");buffer.append(rotation);
+		buffer.append(" x:");
+		buffer.append(x);
+		buffer.append(" y:");
+		buffer.append(y);
+		buffer.append(" bound:");
+		buffer.append(bound);
+		buffer.append(" scale:");
+		buffer.append(scale);
+		buffer.append(" size:");
+		buffer.append(size);
+		buffer.append(" anchor:");
+		buffer.append(anchor);
+		buffer.append(" origin:");
+		buffer.append(origin);
+		buffer.append(" rotation:");
+		buffer.append(rotation);
 		return buffer.toString();
 	}
 
-	public void setPosition (Vector2 position) {
-		setPosition(position.x, position.y);		
+	public void setPosition(Vector2 position) {
+		setPosition(position.x, position.y);
 	}
-	
-	public Actor setStyle(String jsonText){
-		//Json json = JsonReader
+
+	public Actor setStyle(String jsonText) {
+		// Json json = JsonReader
 		return this;
 	}
-	public int getId () {
+
+	public int getId() {
 		return id;
 	}
 
-	public void setId (int id) {
+	public void setId(int id) {
 		this.id = id;
 	}
 
-	public void drawdebug (ShapeRenderer shape) {
-		
-	}	
+	public void drawdebug(ShapeRenderer shape) {
+
+	}
+
+	public boolean isFlipX() {
+		return flipX;
+	}
+
+	public void setFlipX(boolean flipX) {
+		this.flipX = flipX;
+	}
+
+	public boolean isFlipY() {
+		return flipY;
+	}
+
+	public void setFlipY(boolean flipY) {
+		this.flipY = flipY;
+	}
 }

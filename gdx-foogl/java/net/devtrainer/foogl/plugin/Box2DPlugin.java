@@ -2,6 +2,7 @@
 package net.devtrainer.foogl.plugin;
 
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -9,7 +10,11 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.CircleShape;
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.ContactImpulse;
+import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.Shape;
 import com.badlogic.gdx.physics.box2d.World;
@@ -22,7 +27,7 @@ import net.devtrainer.foogl.actor.Actor;
 import net.devtrainer.foogl.event.CallBack;
 import net.devtrainer.foogl.event.IActorEvent;
 
-public class Box2DPlugin extends ScenePlugin {
+public class Box2DPlugin extends ScenePlugin implements ContactListener {
 	private World world;
 	Box2DDebugRenderer debugRenderer;
 	private boolean debug = false;
@@ -31,20 +36,25 @@ public class Box2DPlugin extends ScenePlugin {
 	float TIME_STEP = 1 / 60f;
 	int VELOCITY_ITERATIONS = 6;
 	int POSITION_ITERATIONS = 2;
-	float pixelPerUnit = 1f;
-	float gravity = -100f;
+	float pixelPerMeter = 100f;
+	float gravity = -1f;
 	boolean removeOutOfWorld=true;
 
 	public Box2DPlugin () {
-
 	}
 
-	public float getPixelPerUnit () {
-		return pixelPerUnit;
+	public float getPixelPerMeter() {
+		return pixelPerMeter;
 	}
 
-	public void setPixelPerUnit (float pixelPerUnit) {
-		this.pixelPerUnit = pixelPerUnit;
+	/**
+	 * Default is 100 pixels per meter
+	 * 1 pixel = 1 centimeter
+	 * sprite hight 32 pixel = 0.32 meter in real world
+	 * @param pixelPerMeter
+     */
+	public void setPixelPerMeter(float pixelPerMeter) {
+		this.pixelPerMeter = pixelPerMeter;
 	}
 
 	float wdelta = 0;
@@ -68,15 +78,15 @@ public class Box2DPlugin extends ScenePlugin {
 			return bodies.get(a);
 		}
 		BodyDef bdef = new BodyDef();
-		bdef.position.set(a.getCenter().x / pixelPerUnit, a.getCenter().y/ pixelPerUnit);
+		bdef.position.set(a.getCenter().x / pixelPerMeter, a.getCenter().y/ pixelPerMeter);
 		bdef.type = btype;
 		Body body = world.createBody(bdef);
 		if (shape == null) {
 			shape = new PolygonShape();
-			((PolygonShape)shape).setAsBox(a.getBound().width / (2 * pixelPerUnit), a.getBound().height / (2 * pixelPerUnit));
+			((PolygonShape)shape).setAsBox(a.getBound().width / (2 * pixelPerMeter), a.getBound().height / (2 * pixelPerMeter));
 			cflag = true;
 		}else if(shape instanceof CircleShape){
-			((CircleShape)shape).setRadius(a.getBound().width / (2 * pixelPerUnit));
+			((CircleShape)shape).setRadius(a.getBound().width / (2 * pixelPerMeter));
 		}
 		
 
@@ -85,9 +95,9 @@ public class Box2DPlugin extends ScenePlugin {
 		} else {
 			FixtureDef fixtureDef = new FixtureDef();
 			fixtureDef.shape = shape;
-			fixtureDef.density = 0.3f;
-			fixtureDef.friction = 0.5f;
-			fixtureDef.restitution = 0.5f; // Make it bounce a little bit
+			fixtureDef.density = 0.5f;
+			fixtureDef.friction = 0.7f;
+			fixtureDef.restitution = 0.2f; // Make it bounce a little bit
 			body.createFixture(fixtureDef);
 		}
 		if (cflag) {
@@ -110,6 +120,8 @@ public class Box2DPlugin extends ScenePlugin {
 	public void onCreate () {
 		world = new World(new Vector2(0, gravity), true);
 		debugRenderer = new Box2DDebugRenderer();
+		world.setContactListener(this);
+
 		//System.out.println(world);
 	}
 
@@ -122,8 +134,8 @@ public class Box2DPlugin extends ScenePlugin {
 	public void onPostDraw (float delta) {
 		// TODO Auto-generated method stub
 		if (debug && world != null) {
-			
-			debugRenderer.render(world, getScene().getCamera().combined);
+			Matrix4 debugMatrix = getScene().getBatch().getProjectionMatrix().cpy().scale(pixelPerMeter, pixelPerMeter, 0);
+			debugRenderer.render(world, debugMatrix); //getScene().getCamera().combined
 		}
 	}
 
@@ -138,10 +150,10 @@ public class Box2DPlugin extends ScenePlugin {
 		}
 		Viewport v=getScene().getViewport();
 		Rectangle worldbound = new Rectangle(-50,-50,v.getWorldWidth()+50, v.getWorldHeight()+50);
-		Array<Actor> killed=new Array<>();
+		Array<Actor> killed=new Array<Actor>();
 		for (Entry<Actor, Body> en : bodies.entries()) {
-			float x = en.value.getPosition().x * pixelPerUnit;
-			float y = en.value.getPosition().y * pixelPerUnit;
+			float x = en.value.getPosition().x * pixelPerMeter;
+			float y = en.value.getPosition().y * pixelPerMeter;
 			//if(en.key.getScaleX()!=1){
 			//	x=x+en.key.getWidth()/(en.key.getScaleX()+1);
 			//}
@@ -180,4 +192,23 @@ public class Box2DPlugin extends ScenePlugin {
 	
 	final public CallBack onOutOfWorld = new CallBack(IActorEvent.class);
 
+	@Override
+	public void beginContact(Contact contact) {
+
+	}
+
+	@Override
+	public void endContact(Contact contact) {
+       System.out.println(contact);
+	}
+
+	@Override
+	public void preSolve(Contact contact, Manifold oldManifold) {
+
+	}
+
+	@Override
+	public void postSolve(Contact contact, ContactImpulse impulse) {
+
+	}
 }

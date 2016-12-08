@@ -13,17 +13,31 @@ public class DelayAction extends Action {
 	public DelayAction (float duration, Action next) {
 		super();
 		this.duration = duration;
-		this.next = next;
+		setNext(next);
 	}
 
 	@Override
-	public boolean act (float delta) {
+	public boolean act (float delta) {               
 		time += delta;
 		if(time<duration) return false;
 		
-		if(next!=null) return next.act(delta);
-		
+		if(next!=null){
+                    if(next.actor==null) next.actor = this.actor;
+                    if(!next.act(delta)) return false;
+                }		
 		return process();
+	}
+
+	public Action getNext() {
+		return next;
+	}
+
+	public void setNext(Action next) {
+		if(next.parent!=null){
+		   next.parent.removeAction(next);
+		}
+		if(next.actor==null) next.actor = this.actor;
+		this.next = next;
 	}
 
 	public boolean process () {
@@ -33,7 +47,7 @@ public class DelayAction extends Action {
 	@Override
 	public void restart () {
 		time=0;
-		next.restart();
+		if(next!=null) next.restart();
 		super.restart();
 	}
 }

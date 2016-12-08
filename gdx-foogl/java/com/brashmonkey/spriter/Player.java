@@ -273,7 +273,7 @@ public class Player {
 	
 	/**
 	 * Returns whether the given point lies inside the box of the given bone or object.
-	 * @param bone the bone or object
+	 * @param boneOrObject the bone or object
 	 * @param point the point
 	 * @return <code>true</code> if the point lies inside the box of the given bone or object
 	 * @throws NullPointerException if no object info for the given bone or object exists
@@ -706,16 +706,18 @@ public class Player {
 	/**
 	 * Sets the scale of this player to the given one.
 	 * Only uniform scaling is supported.
-	 * @param scale the new scale. 1f means 100% scale.
+	 * @param scalex the new scale. 1f means 100% scale.
+	 * @param scaley the new scale. 1f means 100% scale.
 	 * @return this player to enable chained operations
 	 */
 	public Player setScale(float scalex, float scaley){
-		this.root.scale.set(scalex*flippedX(), scaley*flippedY());
+		//if(scalex>0)scalex=scalex*flippedX();
+		this.root.scale.set(scalex, scaley);
 		return this;
 	}
 	
 	public Player setScale(float scale){
-		this.root.scale.set(scale*flippedX(), scale*flippedY());
+		this.root.scale.set(scale, scale);
 		return this;
 	}
 	

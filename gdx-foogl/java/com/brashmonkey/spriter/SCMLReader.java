@@ -131,8 +131,8 @@ public class SCMLReader {
 	protected void loadObjectInfos(ArrayList<Element> infos, Entity entity){
 		for(int i = 0; i< infos.size(); i++){
 			Element info = infos.get(i);
-			Entity.ObjectInfo objInfo = new Entity.ObjectInfo(info.get("name","info"+i),
-									Entity.ObjectType.getObjectInfoFor(info.get("type","")),
+			ObjectInfo objInfo = new ObjectInfo(info.get("name","info"+i),
+									ObjectType.getObjectInfoFor(info.get("type","")),
 									new Dimension(info.getFloat("w", 0), info.getFloat("h", 0)));
 			entity.addInfo(objInfo);
 			Element frames = info.getChildByName("frames");
@@ -155,7 +155,7 @@ public class SCMLReader {
 	protected void loadCharacterMaps(ArrayList<Element> maps, Entity entity){
 		for(int i = 0; i< maps.size(); i++){
 			Element map = maps.get(i);
-			Entity.CharacterMap charMap = new Entity.CharacterMap(map.getInt("id"), map.getAttribute("name", "charMap"+i));
+			CharacterMap charMap = new CharacterMap(map.getInt("id"), map.getAttribute("name", "charMap"+i));
 			entity.addCharacterMap(charMap);
 			ArrayList<Element> mappings = map.getChildrenByName("map");
 			for (int i1 = 0; i1 < mappings.size(); i1++) {
