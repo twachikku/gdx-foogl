@@ -84,6 +84,7 @@ import javax.swing.plaf.basic.BasicComboBoxUI;
 
 @SuppressWarnings("serial")
 public class GdxSetupUI extends JFrame {
+	static String version = "1.0.0 Preview";
 
 	//DependencyBank dependencyBank;
 	ProjectBuilder builder;
@@ -302,17 +303,17 @@ public class GdxSetupUI extends JFrame {
 		JScrollPane scrollPane = new JScrollPane(textArea);
 		JPanel title = new JPanel();
 		JPanel topBar = new JPanel();
-		JLabel windowLabel = new JLabel("    Libgdx Project Generator");
+		JLabel windowLabel = new JLabel("    GDX-Foogl Project Generator "+version);
 		JButton exit;
 		JButton minimize;
 		JLabel logo;
 
 		{
-			setBackground(new Color(36, 36, 36));
-			topBar.setBackground(new Color(64, 67, 69));
+			setBackground(new Color(20, 60, 80));
+			topBar.setBackground(new Color(30,70,90));
 			title.setBackground(new Color(94, 97, 99));
 			windowLabel.setForeground(new Color(255, 255, 255));
-			form.setBackground(new Color(36, 36, 36));
+			form.setBackground(new Color(30, 60, 75));
 			for (int i = 0; i < form.getComponents().length; i++) {
 				Component component = form.getComponents()[i];
 				if (component instanceof JTextField) {
@@ -478,11 +479,11 @@ public class GdxSetupUI extends JFrame {
 			extensionsLabel.setForeground(new Color(255, 20, 20));
 
 			subProjectsPanel.setOpaque(true);
-			subProjectsPanel.setBackground(new Color(46, 46, 46));
+			subProjectsPanel.setBackground(new Color(30, 80, 80));
 
 			for (JPanel extensionPanel : extensionsPanels) {
 				extensionPanel.setOpaque(true);
-				extensionPanel.setBackground(new Color(46, 46, 46));
+				extensionPanel.setBackground(new Color(46, 46,60));
 			}
 		}
 

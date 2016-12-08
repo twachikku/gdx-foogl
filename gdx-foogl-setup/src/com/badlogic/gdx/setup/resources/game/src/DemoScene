@@ -1,4 +1,4 @@
-package net.devtrainer.gdxfoogl.demo;
+package %PACKAGE%;
 
 import com.badlogic.gdx.math.Interpolation;
 
