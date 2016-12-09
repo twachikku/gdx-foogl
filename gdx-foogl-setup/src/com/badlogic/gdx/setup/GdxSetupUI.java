@@ -516,7 +516,7 @@ public class GdxSetupUI extends JFrame {
 					continue;
 				}				
 				SetupCheckBox checkBox = new SetupCheckBox(projectType.getName().substring(0, 1).toUpperCase() + projectType.getName().substring(1, projectType.getName().length()));
-				if (projectType != ProjectType.IOSMOE) {
+				if (projectType != ProjectType.IOSMOE && projectType != ProjectType.IOS  && projectType != ProjectType.HTML ) {
 					modules.add(projectType);
 					checkBox.setSelected(true);
 				}

@@ -91,7 +91,13 @@ eclipse {
 
     classpath {
         plusConfigurations += [ project.configurations.compile ]        
-        containers 'org.eclipse.andmore.ANDROID_FRAMEWORK', 'org.eclipse.andmore.LIBRARIES'       
+       // containers 'org.eclipse.andmore.ANDROID_FRAMEWORK', 'org.eclipse.andmore.LIBRARIES'       
+        file {          
+          whenMerged { classpath ->
+               classpath.entries.removeAll { entry -> entry.kind == 'lib' }
+               classpath.entries.findAll { entry -> entry.path == 'org.eclipse.buildship.core.gradleclasspathcontainer' }*.exported = true
+          }
+        } 
     }
 
     project {
